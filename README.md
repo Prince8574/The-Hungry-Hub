@@ -287,7 +287,7 @@ The-Hungry-Hub/
 ### Clone Repository
 
 ```bash
-git clone https://github.com/manasvitiwari-08/The-Hungry-Hub.git
+git clone https://github.com/Prince8574/The-Hungry-Hub.git
 cd The-Hungry-Hub
 ```
 
@@ -736,7 +736,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Authors
 
-- **Manasvi Tiwari** - [@manasvitiwari-08](https://github.com/manasvitiwari-08)
+- **Prince Kumar Singh** - [@Prince8574](https://github.com/Prince8574)
 
 ---
 
@@ -750,13 +750,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-For support, email manasvi@example.com or open an issue on GitHub.
+For support, email mrprincekumarsingh143@gmail.com or open an issue on GitHub.
 
 ---
 
 <div align="center">
 
-**Made with ❤️ by Manasvi Tiwari**
+**Made with ❤️ by Prince Kumar Singh**
 
 ⭐ Star this repo if you like it!
 
