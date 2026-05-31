@@ -1,0 +1,425 @@
+/* ═══════════════════════════════════════════════════════════
+   MENU ITEM FORM PAGE - COMPACT & CLEAN
+   ═══════════════════════════════════════════════════════════ */
+.menu-item-form-page {
+  padding: 2rem 1.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  background: #0a0a0a;
+  min-height: 100vh;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FORM HEADER
+   ═══════════════════════════════════════════════════════════ */
+.form-header {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 1.25rem;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: #ff6b00;
+  padding: 0;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: opacity 0.2s;
+}
+
+.back-btn:hover {
+  opacity: 0.7;
+}
+
+.form-header h1 {
+  font-size: 1.75rem;
+  color: #fff;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.form-header p {
+  color: #999;
+  font-size: 0.95rem;
+  font-weight: 400;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FORM LAYOUT - 3 ROWS
+   ═══════════════════════════════════════════════════════════ */
+.menu-form {
+  background: transparent;
+}
+
+/* Row 1: Two column layout (Image + Basic Info) */
+.form-row-section {
+  background: transparent;
+  border: none;
+  padding: 1.5rem 0;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+/* Rows 2 & 3: Single column with grid inside */
+.form-row-section-single {
+  background: transparent;
+  border: none;
+  padding: 1.5rem 0;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.form-row-section-single:last-of-type {
+  border-bottom: none;
+}
+
+/* Full width title for rows 2 & 3 */
+.section-title-full {
+  font-size: 1.1rem;
+  color: #fff;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.5rem;
+}
+
+/* Left and right sections for row 1 */
+.form-section-left,
+.form-section-right {
+  display: flex;
+  flex-direction: column;
+}
+
+.section-title {
+  font-size: 1.1rem;
+  color: #fff;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.5rem;
+}
+
+/* 4-column grid for row 2 (Tag + Stock + Prep Time + Availability) */
+.form-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-grid-5 {
+  display: none;
+}
+
+/* Tag suggestions in a row */
+.tag-suggestions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  padding-top: 0.5rem;
+}
+
+.tag-label {
+  font-size: 0.85rem;
+  color: #999;
+  margin-right: 0.5rem;
+}
+
+.form-layout {
+  display: none;
+}
+
+.form-column {
+  display: none;
+}
+
+.form-card {
+  display: none;
+}
+
+.card-title {
+  display: none;
+}
+
+.form-field-full {
+  display: none;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   IMAGE SECTION
+   ═══════════════════════════════════════════════════════════ */
+.image-preview-container {
+  width: 100%;
+  max-width: 400px;
+  height: 200px;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+  background: #000;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-placeholder {
+  text-align: center;
+  color: #666;
+}
+
+.placeholder-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 0.25rem;
+  opacity: 0.5;
+}
+
+.image-placeholder p {
+  font-size: 0.85rem;
+}
+
+.info-grid {
+  display: none;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FORM FIELDS - COMPACT
+   ═══════════════════════════════════════════════════════════ */
+.form-field {
+  margin-bottom: 1.25rem;
+}
+
+.form-field:last-child {
+  margin-bottom: 0;
+}
+
+.form-field label {
+  display: block;
+  font-size: 0.9rem;
+  color: #fff;
+  margin-bottom: 0.4rem;
+  font-weight: 400;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  padding: 0.6rem 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Dropdown specific styling */
+.form-field select {
+  padding: 0.6rem 0.5rem 0.6rem 0;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  padding-right: 2rem;
+}
+
+/* Dropdown options styling */
+.form-field select option {
+  background: #1a1a1a;
+  color: #fff;
+  padding: 0.5rem;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  outline: none;
+  border-bottom-color: #ff6b00;
+}
+
+.form-field textarea {
+  resize: vertical;
+  min-height: 80px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.6rem;
+  border-radius: 4px;
+}
+
+.form-field textarea:focus {
+  border-color: #ff6b00;
+}
+
+.field-hint {
+  display: block;
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.35rem;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FORM ROW - COMPACT
+   ═══════════════════════════════════════════════════════════ */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-row.three-cols {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+@media (max-width: 768px) {
+  .form-row,
+  .form-row.three-cols {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TAG SUGGESTIONS - COMPACT
+   ═══════════════════════════════════════════════════════════ */
+.tag-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+}
+
+.tag-suggestions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  padding-top: 0.5rem;
+}
+
+.tag-label {
+  font-size: 0.85rem;
+  color: #999;
+  margin-right: 0.5rem;
+}
+
+.tag-btn {
+  padding: 0.35rem 0.75rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  color: #999;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tag-btn:hover {
+  border-color: #ff6b00;
+  color: #ff6b00;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FORM ACTIONS - COMPACT
+   ═══════════════════════════════════════════════════════════ */
+.form-actions {
+  display: flex;
+  justify-content: flex-start;
+  gap: 0.75rem;
+  padding-top: 2rem;
+  margin-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-cancel,
+.btn-submit {
+  padding: 0.7rem 1.75rem;
+  border-radius: 5px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-cancel {
+  background: transparent;
+  color: #999;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-cancel:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.btn-submit {
+  background: #ff6b00;
+  color: #fff;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background: #ff8c00;
+}
+
+.btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 1200px) {
+  .form-grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 1024px) {
+  .form-grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .menu-item-form-page {
+    padding: 1.5rem 1rem;
+  }
+
+  .form-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .form-row-section {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    padding: 1.25rem 0;
+  }
+
+  .form-grid-4 {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}

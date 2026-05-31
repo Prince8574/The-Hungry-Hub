@@ -1,0 +1,122 @@
+/* ===== HOW IT WORKS ===== */
+.hiw-section {
+  padding: 2rem 4rem;
+  background: #0a0a0a;
+}
+
+.hiw-steps {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+  max-width: 1100px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+}
+
+.hiw-step-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.hiw-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  width: 260px;
+  position: relative;
+  transition: transform 0.3s, border-color 0.3s, background 0.3s;
+}
+
+.hiw-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(255, 107, 0, 0.35);
+  background: rgba(255, 107, 0, 0.05);
+}
+
+.hiw-step-num {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #ff6b00, #ff3d00);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.25rem 0.75rem;
+  border-radius: 99px;
+  letter-spacing: 1px;
+}
+
+.hiw-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+  line-height: 1;
+}
+
+.hiw-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 0.6rem;
+}
+
+.hiw-desc {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* Connector arrow between steps */
+.hiw-connector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0 1rem;
+  transform-origin: left center;
+}
+
+.hiw-connector-line {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255, 107, 0, 0.5), rgba(255, 107, 0, 0.15));
+  border-radius: 99px;
+}
+
+.hiw-connector-arrow {
+  font-size: 1.4rem;
+  color: rgba(255, 107, 0, 0.6);
+  line-height: 1;
+  margin-top: -6px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .hiw-section { padding: 2.5rem 1.5rem; }
+
+  .hiw-steps {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .hiw-step-wrap {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .hiw-card { width: 100%; max-width: 340px; }
+
+  .hiw-connector {
+    transform: rotate(90deg);
+    padding: 0;
+  }
+}

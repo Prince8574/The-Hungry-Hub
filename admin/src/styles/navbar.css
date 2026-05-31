@@ -1,0 +1,110 @@
+.admin-navbar {
+  height: 60px;
+  background: #0f0f0f;
+  border-bottom: 1px solid rgba(255, 107, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.navbar-left h2 {
+  font-size: 1.1rem;
+  color: #fff;
+  font-weight: 500;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.notification-btn {
+  position: relative;
+  background: transparent;
+  border: 1px solid rgba(255, 107, 0, 0.4);
+  border-radius: 4px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.notification-btn:hover {
+  background: rgba(255, 107, 0, 0.08);
+  border-color: #ff6b00;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #ff6b00;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 600;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.8rem;
+  background: transparent;
+  border: 1px solid rgba(255, 107, 0, 0.4);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-profile:hover {
+  background: rgba(255, 107, 0, 0.08);
+  border-color: #ff6b00;
+}
+
+.admin-profile img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid #ff6b00;
+}
+
+.admin-profile span {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #fff;
+}
+
+.logout-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 59, 48, 0.4);
+  color: #ff3b30;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.logout-btn:hover {
+  background: rgba(255, 59, 48, 0.08);
+  border-color: #ff3b30;
+}
