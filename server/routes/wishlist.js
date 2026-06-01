@@ -88,6 +88,9 @@ router.post('/', protect, async (req, res, next) => {
 // Remove item by menuItem ID
 router.delete('/:menuItemId', protect, async (req, res, next) => {
   try {
+    if (!req.params.menuItemId.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: 'Invalid item ID' });
+    }
     const wishlist = await Wishlist.findOne({ user: req.user._id });
 
     if (!wishlist) {
