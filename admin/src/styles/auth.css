@@ -1,264 +1,333 @@
-/* ===== AUTH LAYOUT ===== */
-.auth-wrapper {
-  display: flex;
-  min-height: 100vh;
-  width: 100%;
-  background: #0a0a0a;
-  font-family: "Poppins", sans-serif;
-}
+/* ═══════════════════════════════════════════
+   ADMIN LOGIN PAGE
+═══════════════════════════════════════════ */
 
-/* ===== LEFT SIDE ===== */
-.auth-left {
-  position: relative;
-  width: 40%;
-  background: linear-gradient(135deg, #ff6b00 0%, #ff8533 100%);
+.al-page {
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  background: #080808;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Poppins', sans-serif;
+  padding: 1rem;
+}
+
+/* ── Animated background blobs ── */
+.al-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  animation: al-blob-move 8s ease-in-out infinite alternate;
+}
+
+.al-blob1 {
+  width: 500px; height: 500px;
+  background: rgba(255, 107, 0, 0.12);
+  top: -150px; left: -150px;
+}
+
+.al-blob2 {
+  width: 400px; height: 400px;
+  background: rgba(255, 61, 0, 0.08);
+  bottom: -100px; right: -100px;
+  animation-delay: 4s;
+}
+
+@keyframes al-blob-move {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(40px, 30px) scale(1.1); }
+}
+
+/* ── Floating particles ── */
+.al-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
   overflow: hidden;
 }
 
-.left-content {
-  text-align: center;
-  z-index: 1;
+.al-particle {
+  position: absolute;
+  bottom: -50px;
+  animation: al-float linear infinite;
+  opacity: 0.15;
+  user-select: none;
 }
 
-.left-logo-icon {
-  font-size: 5rem;
-  display: block;
-  margin-bottom: 1.5rem;
-  filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3));
+@keyframes al-float {
+  0%   { transform: translateY(0) rotate(0deg);   opacity: 0; }
+  10%  { opacity: 0.15; }
+  90%  { opacity: 0.15; }
+  100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
 }
 
-.left-logo-text {
-  font-family: "Playfair Display", serif;
-  font-size: 3rem;
-  font-weight: 700;
-  color: #fff;
-  margin: 0;
-  letter-spacing: 1px;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+/* ── Card ── */
+.al-card {
+  background: rgba(20, 20, 20, 0.95);
+  border: 1px solid rgba(255, 107, 0, 0.2);
+  border-radius: 24px;
+  padding: 2.5rem 2.2rem;
+  width: 100%;
+  max-width: 440px;
+  position: relative;
+  z-index: 10;
+  box-shadow:
+    0 0 0 1px rgba(255,107,0,0.05),
+    0 24px 64px rgba(0,0,0,0.6),
+    0 0 80px rgba(255,107,0,0.06);
+  animation: al-card-in 0.6s cubic-bezier(0.34,1.56,0.64,1);
+  backdrop-filter: blur(20px);
 }
 
-.left-tagline {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 1.1rem;
-  margin-top: 0.8rem;
-  font-weight: 500;
+@keyframes al-card-in {
+  from { opacity: 0; transform: translateY(40px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* ===== RIGHT SIDE ===== */
-.auth-right {
-  width: 60%;
+.al-shake {
+  animation: al-shake 0.5s cubic-bezier(0.36,0.07,0.19,0.97);
+}
+
+@keyframes al-shake {
+  0%,100% { transform: translateX(0); }
+  20%     { transform: translateX(-8px); }
+  40%     { transform: translateX(8px); }
+  60%     { transform: translateX(-6px); }
+  80%     { transform: translateX(6px); }
+}
+
+/* ── Logo ── */
+.al-logo {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 3rem;
-  background: #0f0f0f;
+  gap: 1rem;
+  margin-bottom: 1.8rem;
 }
 
-.auth-form-box {
-  width: 100%;
-  max-width: 450px;
+.al-logo-ring {
+  width: 60px; height: 60px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ff6b00, #ff3d00);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem;
+  box-shadow: 0 8px 24px rgba(255,107,0,0.4);
+  flex-shrink: 0;
+  animation: al-logo-pulse 3s ease-in-out infinite;
 }
 
-/* Titles */
-.auth-title {
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin: 0 0 0.5rem;
+@keyframes al-logo-pulse {
+  0%,100% { box-shadow: 0 8px 24px rgba(255,107,0,0.4); }
+  50%     { box-shadow: 0 8px 32px rgba(255,107,0,0.65); }
 }
 
-.auth-subtitle {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.95rem;
-  margin: 0 0 2.5rem;
+.al-logo-text h1 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 0.15rem;
+  letter-spacing: -0.3px;
 }
 
-/* Form */
-.auth-form {
+.al-logo-text span {
+  font-size: 0.72rem;
+  color: #ff6b00;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+/* ── Divider ── */
+.al-divider {
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.8rem;
 }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+.al-divider::before,
+.al-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.08);
 }
 
-.form-group label {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.9rem;
+.al-divider span {
+  font-size: 0.78rem;
+  color: #666;
+  white-space: nowrap;
   font-weight: 500;
 }
 
-.input-wrapper {
+/* ── Form ── */
+.al-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+/* ── Field ── */
+.al-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.al-field label {
+  font-size: 0.8rem;
+  color: #888;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.al-field.focused label { color: #ff6b00; }
+
+.al-input-wrap {
   position: relative;
   display: flex;
   align-items: center;
 }
 
-.input-wrapper input {
-  width: 100%;
-  padding: 0.9rem 3rem 0.9rem 1rem;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 8px;
-  color: #fff;
-  font-size: 0.95rem;
-  font-family: "Poppins", sans-serif;
-  outline: none;
-  transition: all 0.3s;
-}
-
-.input-wrapper input::placeholder {
-  color: rgba(255, 255, 255, 0.4);
-}
-
-.input-wrapper input:focus {
-  border-color: #ff6b00;
-  background: rgba(255, 107, 0, 0.1);
-  box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
-}
-
-.toggle-pass {
+.al-input-icon {
   position: absolute;
-  right: 12px;
+  left: 0.9rem;
+  font-size: 1rem;
+  pointer-events: none;
+  transition: transform 0.2s;
+}
+
+.al-field.focused .al-input-icon { transform: scale(1.15); }
+
+.al-input-wrap input {
+  width: 100%;
+  padding: 0.8rem 2.8rem 0.8rem 2.8rem;
+  background: rgba(255,255,255,0.04);
+  border: 1.5px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 0.9rem;
+  font-family: 'Poppins', sans-serif;
+  outline: none;
+  transition: all 0.25s;
+}
+
+.al-input-wrap input::placeholder { color: #444; }
+
+.al-field.focused .al-input-wrap input {
+  border-color: #ff6b00;
+  background: rgba(255,107,0,0.05);
+  box-shadow: 0 0 0 3px rgba(255,107,0,0.1);
+}
+
+.al-eye {
+  position: absolute;
+  right: 0.9rem;
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 1.1rem;
-  padding: 0;
-  line-height: 1;
-  opacity: 0.6;
-  transition: opacity 0.2s;
-}
-
-.toggle-pass:hover {
-  opacity: 1;
-}
-
-/* Options row */
-.form-options {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.85rem;
-}
-
-.remember-me {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: rgba(255, 255, 255, 0.6);
-  cursor: pointer;
-  user-select: none;
-}
-
-.remember-me input[type="checkbox"] {
-  accent-color: #ff6b00;
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-}
-
-/* Submit Button */
-.auth-btn {
-  width: 100%;
-  padding: 1rem;
-  background: linear-gradient(135deg, #ff6b00, #ff8533);
-  color: #fff;
   font-size: 1rem;
-  font-weight: 600;
-  font-family: "Poppins", sans-serif;
-  border: none;
-  border-radius: 8px;
+  color: #666;
+  padding: 0;
+  transition: color 0.15s;
+}
+.al-eye:hover { color: #ff6b00; }
+
+.al-clear {
+  position: absolute;
+  right: 0.9rem;
+  color: #555;
   cursor: pointer;
-  transition: all 0.3s;
+  font-size: 0.75rem;
+  font-weight: 700;
+  transition: color 0.15s;
+}
+.al-clear:hover { color: #ff6b00; }
+
+/* Password strength bar */
+.al-strength {
+  height: 3px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 0.3rem;
+}
+
+.al-strength-bar {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease, background 0.3s ease;
+}
+
+/* ── Submit button ── */
+.al-submit {
+  margin-top: 0.4rem;
+  padding: 0.9rem;
+  background: linear-gradient(135deg, #ff6b00, #ff3d00);
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 50px;
-  margin-top: 0.5rem;
-  box-shadow: 0 4px 15px rgba(255, 107, 0, 0.3);
+  gap: 0.5rem;
+  transition: all 0.25s;
+  box-shadow: 0 4px 20px rgba(255,107,0,0.35);
+  position: relative;
+  overflow: hidden;
 }
 
-.auth-btn:hover:not(:disabled) {
+.al-submit::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.al-submit:hover:not(:disabled)::before { opacity: 1; }
+.al-submit:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 107, 0, 0.4);
+  box-shadow: 0 8px 28px rgba(255,107,0,0.5);
 }
+.al-submit:active:not(:disabled) { transform: translateY(0); }
+.al-submit:disabled { opacity: 0.6; cursor: not-allowed; }
 
-.auth-btn:active:not(:disabled) {
-  transform: translateY(0);
+.al-arrow {
+  font-size: 1.1rem;
+  transition: transform 0.2s;
 }
-
-.auth-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+.al-submit:hover:not(:disabled) .al-arrow { transform: translateX(4px); }
 
 /* Spinner */
-.spinner {
-  width: 20px;
-  height: 20px;
-  border: 2.5px solid rgba(255, 255, 255, 0.3);
+.al-spinner {
+  width: 20px; height: 20px;
+  border: 2.5px solid rgba(255,255,255,0.3);
   border-top-color: #fff;
   border-radius: 50%;
-  animation: spin 0.7s linear infinite;
+  animation: al-spin 0.7s linear infinite;
   display: inline-block;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+@keyframes al-spin { to { transform: rotate(360deg); } }
+
+/* ── Footer note ── */
+.al-footer-note {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.75rem;
+  color: #444;
 }
 
-/* Demo Credentials */
-.demo-credentials {
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.demo-label {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-bottom: 0.8rem;
-}
-
-.demo-text {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 0.85rem;
-  margin: 0.4rem 0;
-}
-
-.demo-text strong {
-  color: #ff6b00;
-  font-weight: 600;
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 968px) {
-  .auth-wrapper {
-    flex-direction: column;
-  }
-  .auth-left {
-    width: 100%;
-    min-height: 250px;
-    padding: 2rem;
-  }
-  .auth-right {
-    width: 100%;
-    padding: 2rem 1.5rem;
-  }
-  .left-logo-text {
-    font-size: 2.5rem;
-  }
-  .left-logo-icon {
-    font-size: 4rem;
-  }
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .al-card { padding: 2rem 1.5rem; border-radius: 20px; }
+  .al-logo-text h1 { font-size: 1.1rem; }
 }
