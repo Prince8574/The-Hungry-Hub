@@ -6,6 +6,7 @@ import Orders from "./pages/Orders";
 import MenuManagement from "./pages/MenuManagement";
 import MenuItemForm from "./pages/MenuItemForm";
 import Admins from "./pages/Admins";
+import AddAdmin from "./pages/AddAdmin";
 import Settings from "./pages/Settings";
 import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
@@ -112,6 +113,28 @@ function App() {
             <ProtectedRoute>
               <AdminLayout>
                 <Admins />
+              </AdminLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admins/add"
+          element={
+            <ProtectedRoute>
+              <AdminLayout>
+                <AddAdmin />
+              </AdminLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admins/edit/:id"
+          element={
+            <ProtectedRoute>
+              <AdminLayout>
+                <AddAdmin />
               </AdminLayout>
             </ProtectedRoute>
           }

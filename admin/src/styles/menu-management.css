@@ -266,102 +266,96 @@
   animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both;
 }
 
-.category-pills {
+/* ── Category Dropdown ── */
+.controls-left {
   display: flex;
-  gap: 0.6rem;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
   flex: 1;
 }
 
-.cat-pill {
-  padding: 0.5rem 0.95rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 6px;
-  color: #999;
-  font-size: 0.82rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+.category-dropdown-wrap {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 0.45rem;
-  position: relative;
-  overflow: hidden;
 }
 
-.cat-pill::before {
-  content: "";
+.category-dropdown-wrap .dropdown-icon {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, #ff6b00, #ff5200);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  left: 0.85rem;
+  font-size: 1rem;
+  pointer-events: none;
+  z-index: 1;
 }
 
-.cat-pill::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at center, rgba(255, 107, 0, 0.1), transparent);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-.cat-pill:hover::before {
-  transform: scaleX(1);
-}
-
-.cat-pill:hover::after {
-  opacity: 1;
-}
-
-.cat-pill:hover {
-  background: rgba(255, 107, 0, 0.06);
-  border-color: rgba(255, 107, 0, 0.25);
-  color: #ff6b00;
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(255, 107, 0, 0.15);
-}
-
-.cat-pill.active {
-  background: rgba(255, 107, 0, 0.12);
-  border-color: rgba(255, 107, 0, 0.35);
-  color: #ff6b00;
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(255, 107, 0, 0.2);
-}
-
-.cat-pill.active::before {
-  transform: scaleX(1);
-}
-
-.cat-pill.active::after {
-  opacity: 1;
-}
-
-.cat-count {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 0.12rem 0.4rem;
+.category-select {
+  padding: 0.55rem 2.4rem 0.55rem 2.6rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 107, 0, 0.25);
   border-radius: 8px;
-  font-size: 0.7rem;
-  font-weight: 600;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  min-width: 220px;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ff6b00' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  transition: all 0.25s ease;
 }
 
-.cat-pill:hover .cat-count,
-.cat-pill.active .cat-count {
-  background: rgba(255, 107, 0, 0.25);
-  transform: scale(1.15);
-  box-shadow: 0 2px 6px rgba(255, 107, 0, 0.2);
+.category-select:focus {
+  outline: none;
+  border-color: #ff6b00;
+  box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.12);
+  background-color: rgba(255, 107, 0, 0.06);
 }
+
+.category-select:hover {
+  border-color: rgba(255, 107, 0, 0.5);
+  background-color: rgba(255, 107, 0, 0.04);
+}
+
+.category-select option {
+  background: #1e1e1e;
+  color: #fff;
+  padding: 0.5rem;
+}
+
+/* Active category badge (clear button) */
+.active-cat-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.75rem;
+  background: rgba(255, 107, 0, 0.12);
+  border: 1px solid rgba(255, 107, 0, 0.35);
+  border-radius: 20px;
+  color: #ff6b00;
+  font-size: 0.8rem;
+  font-weight: 600;
+  animation: badgePop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.clear-cat {
+  background: none;
+  border: none;
+  color: #ff6b00;
+  cursor: pointer;
+  font-size: 0.75rem;
+  padding: 0;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+.clear-cat:hover { opacity: 1; }
+
+/* ── Old pills — hidden ── */
+.category-pills { display: none; }
+.cat-pill       { display: none; }
+.cat-count      { display: none; }
 
 .controls-right {
   display: flex;

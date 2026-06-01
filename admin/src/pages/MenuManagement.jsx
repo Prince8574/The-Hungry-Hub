@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import toast from "react-hot-toast";
 import axios from "axios";
 import "../styles/menu-management.css";
@@ -16,6 +18,7 @@ export default function MenuManagement() {
   const [viewMode, setViewMode] = useState("grid");
   const [loading, setLoading] = useState(true);
   const [stockFilter, setStockFilter] = useState("all");
+  const [selectedItems, setSelectedItems] = useState([]);
   const statsRef = useRef([]);
 
   // Form data removed - now handled in MenuItemForm page
@@ -342,21 +345,31 @@ export default function MenuManagement() {
 
       {/* Single Row Controls */}
       <div className="menu-controls-row">
-        <div className="category-pills">
-          {CATEGORIES.map(cat => (
-            <button
-              key={cat}
-              className={`cat-pill ${activeCategory === cat ? "active" : ""}`}
-              onClick={() => setActiveCategory(cat)}
+        <div className="controls-left">
+          {/* Category Dropdown */}
+          <div className="category-dropdown-wrap">
+            <span className="dropdown-icon">🍽️</span>
+            <select
+              className="category-select"
+              value={activeCategory}
+              onChange={(e) => setActiveCategory(e.target.value)}
             >
-              {cat}
-              {cat !== "All" && (
-                <span className="cat-count">
-                  {menuItems.filter(i => i.category === cat).length}
-                </span>
-              )}
-            </button>
-          ))}
+              <option value="All">All Categories ({menuItems.length})</option>
+              {CATEGORIES.filter(c => c !== "All").map(cat => (
+                <option key={cat} value={cat}>
+                  {cat} ({menuItems.filter(i => i.category === cat).length})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Active category badge */}
+          {activeCategory !== "All" && (
+            <span className="active-cat-badge">
+              {activeCategory}
+              <button className="clear-cat" onClick={() => setActiveCategory("All")}>✕</button>
+            </span>
+          )}
         </div>
         
         <div className="controls-right">

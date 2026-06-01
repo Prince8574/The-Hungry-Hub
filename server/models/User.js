@@ -44,6 +44,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    department: {
+      type: String,
+      default: "",
+    },
+    notes: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );

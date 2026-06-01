@@ -90,6 +90,10 @@ export default function Register() {
       setResendTimer(60);
       animateStep();
       setTimeout(() => otpRefs.current[0]?.focus(), 300);
+      // Dev hint
+      if (import.meta.env.DEV) {
+        toast("Check server console for OTP (dev mode)", { icon: "🖥️", duration: 5000 });
+      }
     } catch (err) {
       toast.error(err.message);
     } finally {

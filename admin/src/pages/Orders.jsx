@@ -8,18 +8,28 @@ import "../styles/orders.css";
 
 const API_URL = "http://localhost:5000/api";
 
+const STATUS_OPTIONS = [
+  { value: "pending",          label: "New Order",       emoji: "🔔", color: "#ffc107" },
+  { value: "confirmed",        label: "Confirmed",       emoji: "✅", color: "#2196f3" },
+  { value: "preparing",        label: "Preparing",       emoji: "👨‍🍳", color: "#ff9800" },
+  { value: "out_for_delivery", label: "Out for Delivery",emoji: "🚚", color: "#9c27b0" },
+  { value: "delivered",        label: "Delivered",       emoji: "🎉", color: "#4caf50" },
+  { value: "cancelled",        label: "Cancelled",       emoji: "❌", color: "#f44336" },
+];
+
+const getStatusOpt = (val) => STATUS_OPTIONS.find(s => s.value === val) || STATUS_OPTIONS[0];
+
 export default function Orders() {
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders]             = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm]     = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [loading, setLoading]           = useState(true);
   const statsRef = useRef([]);
   const navigate = useNavigate();
 
-  // Fetch orders from backend
   useEffect(() => {
     fetchOrders();
-    // Auto-refresh every 30 seconds
     const interval = setInterval(fetchOrders, 30000);
     return () => clearInterval(interval);
   }, []);
@@ -27,430 +37,465 @@ export default function Orders() {
   const fetchOrders = async () => {
     try {
       const token = localStorage.getItem("adminToken");
-      
-      if (!token) {
-        toast.error("Please login as admin");
-        navigate("/login");
-        return;
-      }
-
-      const response = await axios.get(`${API_URL}/orders/all`, {
-        headers: { Authorization: `Bearer ${token}` }
+      if (!token) { navigate("/login"); return; }
+      const res = await axios.get(`${API_URL}/orders/all`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-
-      // Transform backend data to match frontend format
-      const transformedOrders = response.data.orders.map(order => ({
-        id: order._id,
-        customer: order.user?.name || "Guest",
-        phone: order.user?.phone || "N/A",
-        items: order.items.map(item => ({
-          name: item.name,
-          qty: item.qty,
-          price: item.price
+      const data = res.data.orders.map(o => ({
+        id:      o._id,
+        shortId: o._id.slice(-6).toUpperCase(),
+        customer: o.user?.name || "Guest",
+        phone:    o.user?.phone || "N/A",
+        email:    o.user?.email || "N/A",
+        items:    o.items.map(i => ({
+          name:  i.name || i.menuItem?.name || "Item",
+          qty:   i.qty,
+          price: i.price,
         })),
-        amount: order.totalAmount,
-        status: order.status === "out_for_delivery" ? "ready" : order.status, // Map out_for_delivery to ready for UI
-        time: getTimeAgo(order.createdAt),
-        address: `${order.deliveryAddress.line}, ${order.deliveryAddress.city}`,
-        paymentMethod: order.paymentMethod === "cod" ? "Cash" : "Online"
+        amount:   o.totalAmount,
+        status:   o.status,
+        time:     getTimeAgo(o.createdAt),
+        address:  `${o.deliveryAddress?.line || ""}, ${o.deliveryAddress?.city || ""}`,
+        payment:  o.paymentMethod === "cod" ? "COD" : "Online",
       }));
-
-      setOrders(transformedOrders);
+      setOrders(data);
       setLoading(false);
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-      if (error.response?.status === 401 || error.response?.status === 403) {
-        toast.error("Please login as admin");
-        navigate("/login");
-      } else {
-        toast.error("Failed to load orders");
-      }
+    } catch (err) {
+      if (err.response?.status === 401) navigate("/login");
+      else toast.error("Failed to load orders");
       setLoading(false);
     }
   };
 
   const getTimeAgo = (date) => {
-    const seconds = Math.floor((new Date() - new Date(date)) / 1000);
-    if (seconds < 60) return `${seconds} secs ago`;
-    const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes} mins ago`;
-    const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours} hours ago`;
-    return `${Math.floor(hours / 24)} days ago`;
+    const s = Math.floor((new Date() - new Date(date)) / 1000);
+    if (s < 60) return `${s}s ago`;
+    const m = Math.floor(s / 60);
+    if (m < 60) return `${m}m ago`;
+    const h = Math.floor(m / 60);
+    if (h < 24) return `${h}h ago`;
+    return `${Math.floor(h / 24)}d ago`;
+  };
+
+  const updateStatus = async (orderId, newStatus) => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      await axios.put(`${API_URL}/orders/${orderId}/status`, { status: newStatus },
+        { headers: { Authorization: `Bearer ${token}` } });
+      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+      if (selectedOrder?.id === orderId) setSelectedOrder(prev => ({ ...prev, status: newStatus }));
+      const opt = getStatusOpt(newStatus);
+      toast.success(`${opt.emoji} ${opt.label}`, {
+        style: { background: "#1a1a1a", color: "#fff", border: `1px solid ${opt.color}` }
+      });
+    } catch {
+      toast.error("Failed to update status");
+    }
+  };
+
+  const printLabel = (order) => {
+    const itemsHtml = order.items.map(item => `
+      <div class="item-row">
+        <span class="item-name">${item.name}</span>
+        <span class="item-qty">× ${item.qty}</span>
+        <span class="item-price">₹${(item.price * item.qty).toLocaleString()}</span>
+      </div>`).join("");
+
+    const html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8"/>
+  <title>Order #${order.shortId}</title>
+  <style>
+    @page { size: 10cm 14cm; margin: 0; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff;
+      width: 10cm;
+      min-height: 14cm;
+      padding: 14px;
+    }
+    /* Brand */
+    .brand {
+      text-align: center;
+      padding-bottom: 10px;
+      border-bottom: 3px dashed #ff6b00;
+      margin-bottom: 12px;
+    }
+    .brand-name { font-size: 20px; font-weight: 900; color: #ff6b00; }
+    .brand-sub  { font-size: 10px; color: #999; margin-top: 2px; }
+    /* Order ID */
+    .order-id {
+      background: #ff6b00;
+      color: #fff;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 3px;
+      padding: 7px;
+      border-radius: 7px;
+      margin-bottom: 12px;
+    }
+    /* Section */
+    .section { margin-bottom: 10px; }
+    .section-title {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #ff6b00;
+      border-bottom: 1px solid #ff6b00;
+      padding-bottom: 3px;
+      margin-bottom: 6px;
+    }
+    /* KV rows */
+    .kv { display:flex; justify-content:space-between; font-size:12px; padding:2px 0; }
+    .kv-label { color:#888; }
+    .kv-value { font-weight:600; color:#111; text-align:right; max-width:65%; }
+    /* Items */
+    .item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      padding: 4px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .item-name  { flex:1; color:#222; }
+    .item-qty   { color:#888; margin: 0 10px; }
+    .item-price { font-weight:700; color:#222; }
+    /* Total */
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      font-weight: 900;
+      padding: 7px 0 0;
+      border-top: 2px solid #222;
+      margin-top: 4px;
+    }
+    .total-row span:last-child { color: #ff6b00; }
+    /* Payment */
+    .payment {
+      text-align: center;
+      border: 2px solid #222;
+      border-radius: 7px;
+      padding: 7px;
+      font-size: 13px;
+      font-weight: 800;
+      margin: 10px 0;
+      background: #f9f9f9;
+    }
+    /* Footer */
+    .footer {
+      text-align: center;
+      font-size: 9px;
+      color: #bbb;
+      border-top: 1px dashed #ddd;
+      padding-top: 7px;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="brand">
+    <div class="brand-name">🍔 The Hungry Hub</div>
+    <div class="brand-sub">Fresh Food · Fast Delivery</div>
+  </div>
+
+  <div class="order-id"># ${order.shortId}</div>
+
+  <div class="section">
+    <div class="section-title">📦 Deliver To</div>
+    <div class="kv"><span class="kv-label">Name</span><span class="kv-value">${order.customer}</span></div>
+    <div class="kv"><span class="kv-label">Phone</span><span class="kv-value">${order.phone}</span></div>
+    <div class="kv"><span class="kv-label">Address</span><span class="kv-value">${order.address}</span></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🍽️ Items Ordered</div>
+    ${itemsHtml}
+    <div class="total-row">
+      <span>Total</span>
+      <span>₹${order.amount.toLocaleString()}</span>
+    </div>
+  </div>
+
+  <div class="payment">
+    ${order.payment === "COD" ? "💵 CASH ON DELIVERY" : "✅ PAID ONLINE"}
+  </div>
+
+  <div class="footer">
+    ${new Date().toLocaleString("en-IN")} &nbsp;|&nbsp; Thank you! 🙏
+  </div>
+
+  <script>
+    window.onload = function() { window.print(); };
+    window.onafterprint = function() { window.close(); };
+  </script>
+</body>
+</html>`;
+
+    const win = window.open("", "_blank");
+    win.document.write(html);
+    win.document.close();
   };
 
   useGSAP(() => {
-    gsap.fromTo(".page-header", { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" });
-    gsap.fromTo(".stat-box", 
-      { opacity: 0, y: 30, scale: 0.9 }, 
-      { opacity: 1, y: 0, scale: 1, duration: 0.5, stagger: 0.1, delay: 0.2, ease: "back.out(1.7)" }
-    );
-    gsap.fromTo(".order-column", 
-      { opacity: 0, x: -30 }, 
-      { opacity: 1, x: 0, duration: 0.6, stagger: 0.15, delay: 0.4, ease: "power2.out" }
-    );
+    gsap.fromTo(".orders-page", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" });
   }, []);
 
   useEffect(() => {
-    // Animate stat numbers
-    statsRef.current.forEach((el, idx) => {
-      if (el) {
-        const target = parseInt(el.getAttribute('data-target'));
-        gsap.to(el, {
-          innerText: target,
-          duration: 1.5,
-          delay: 0.3 + idx * 0.1,
-          snap: { innerText: 1 },
-          ease: "power1.out"
-        });
-      }
+    statsRef.current.forEach((el, i) => {
+      if (!el) return;
+      const target = parseInt(el.getAttribute("data-target") || "0");
+      gsap.to(el, { innerText: target, duration: 1.2, snap: { innerText: 1 }, delay: i * 0.1, ease: "power1.out" });
     });
   }, [orders]);
 
-  const moveOrder = async (orderId, newStatus) => {
-    try {
-      const token = localStorage.getItem("adminToken");
-      
-      // Map UI status to backend status
-      const backendStatus = newStatus === "ready" ? "out_for_delivery" : newStatus;
-      
-      await axios.put(`${API_URL}/orders/${orderId}/status`, 
-        { status: backendStatus },
-        { headers: { Authorization: `Bearer ${token}` }}
-      );
+  const filtered = orders.filter(o => {
+    const matchSearch = !searchTerm ||
+      o.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      o.shortId.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchStatus = filterStatus === "all" || o.status === filterStatus;
+    return matchSearch && matchStatus;
+  });
 
-      // Update local state
-      setOrders(prev => prev.map(order => 
-        order.id === orderId ? { ...order, status: newStatus, time: "Just now" } : order
-      ));
-      
-      const statusEmojis = {
-        preparing: "👨‍🍳 Preparing",
-        ready: "✅ Ready for Pickup",
-        delivered: "🎉 Delivered"
-      };
-      
-      toast.success(`${statusEmojis[newStatus]}`, {
-        icon: "🚀",
-        style: {
-          background: '#1a1a1a',
-          color: '#fff',
-          border: '1px solid #ff6b00',
-        }
-      });
-    } catch (error) {
-      console.error("Error updating order status:", error);
-      toast.error("Failed to update order status");
-    }
-  };
-
-  const getOrdersByStatus = (status) => {
-    let filtered = orders.filter(order => order.status === status);
-    if (searchTerm) {
-      filtered = filtered.filter(order => 
-        order.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.id.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-    return filtered;
-  };
-  
-  const getStatusCount = (status) => orders.filter(o => o.status === status).length;
-  const getTotalRevenue = () => orders.reduce((sum, o) => sum + o.amount, 0);
+  const count = (s) => orders.filter(o => o.status === s).length;
+  const revenue = orders.reduce((s, o) => s + o.amount, 0);
 
   return (
-    <div className="orders-page-new">
-      {/* Page Header */}
-      <div className="page-header">
-        <div className="header-left">
-          <h1>📦 Orders Management</h1>
-          <p>Real-time order tracking and management</p>
+    <div className="orders-page">
+
+      {/* ── Header ── */}
+      <div className="op-header">
+        <div>
+          <h1>📦 Orders</h1>
+          <p>Real-time order management</p>
         </div>
-        <div className="header-right">
-          <div className="search-box">
-            <span className="search-icon">🔍</span>
-            <input 
-              type="text" 
-              placeholder="Search orders or customer..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+        <div className="op-header-right">
+          <div className="op-search">
+            <span>🔍</span>
+            <input placeholder="Search name or ID…" value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)} />
           </div>
-          <button className="btn-refresh-new" onClick={() => { fetchOrders(); toast.success("Orders refreshed!"); }}>
+          <select className="op-filter" value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
+            <option value="all">All Orders</option>
+            {STATUS_OPTIONS.map(s => (
+              <option key={s.value} value={s.value}>{s.emoji} {s.label}</option>
+            ))}
+          </select>
+          <button className="op-refresh" onClick={() => { fetchOrders(); toast.success("Refreshed!"); }}>
             🔄 Refresh
           </button>
-          <button className="btn-filter-new">
-            ⚙️ Filter
-          </button>
         </div>
       </div>
 
-      {/* Stats Row */}
-      <div className="stats-row">
-        <div className="stat-box">
-          <div className="stat-icon-circle">📊</div>
-          <span className="stat-number" ref={el => statsRef.current[0] = el} data-target={orders.length}>0</span>
-          <span className="stat-label">Total Orders</span>
+      {/* ── Stats ── */}
+      <div className="op-stats">
+        <div className="op-stat-item">
+          <span className="op-stat-val">{orders.length}</span>
+          <span className="op-stat-lbl">Total Orders</span>
         </div>
-        <div className="stat-box">
-          <div className="stat-icon-circle new">🔔</div>
-          <span className="stat-number" ref={el => statsRef.current[1] = el} data-target={getStatusCount("pending")}>0</span>
-          <span className="stat-label">New Orders</span>
+        <div className="op-stat-divider" />
+        <div className="op-stat-item">
+          <span className="op-stat-val" style={{color:"#ffc107"}}>{count("pending")}</span>
+          <span className="op-stat-lbl">🔔 New</span>
         </div>
-        <div className="stat-box">
-          <div className="stat-icon-circle preparing">👨‍🍳</div>
-          <span className="stat-number" ref={el => statsRef.current[2] = el} data-target={getStatusCount("preparing")}>0</span>
-          <span className="stat-label">Preparing</span>
+        <div className="op-stat-divider" />
+        <div className="op-stat-item">
+          <span className="op-stat-val" style={{color:"#ff9800"}}>{count("preparing")}</span>
+          <span className="op-stat-lbl">👨‍🍳 Preparing</span>
         </div>
-        <div className="stat-box">
-          <div className="stat-icon-circle ready">✅</div>
-          <span className="stat-number" ref={el => statsRef.current[3] = el} data-target={getStatusCount("ready")}>0</span>
-          <span className="stat-label">Ready</span>
+        <div className="op-stat-divider" />
+        <div className="op-stat-item">
+          <span className="op-stat-val" style={{color:"#9c27b0"}}>{count("out_for_delivery")}</span>
+          <span className="op-stat-lbl">🚚 Out for Delivery</span>
         </div>
-        <div className="stat-box highlight">
-          <div className="stat-icon-circle revenue">💰</div>
-          <span className="stat-number">₹{getTotalRevenue().toLocaleString()}</span>
-          <span className="stat-label">Total Revenue</span>
-          <span className="stat-trend">↗ +12% today</span>
+        <div className="op-stat-divider" />
+        <div className="op-stat-item">
+          <span className="op-stat-val" style={{color:"#4caf50"}}>{count("delivered")}</span>
+          <span className="op-stat-lbl">🎉 Delivered</span>
+        </div>
+        <div className="op-stat-divider" />
+        <div className="op-stat-item">
+          <span className="op-stat-val" style={{color:"#ff6b00"}}>₹{revenue.toLocaleString()}</span>
+          <span className="op-stat-lbl">💰 Revenue</span>
         </div>
       </div>
 
-      {/* Orders Container */}
-      <div className="orders-container">
+      {/* ── Table ── */}
+      <div className="op-table-wrap">
         {loading ? (
-          <div className="loading-state">
-            <div className="loading-spinner">⏳</div>
-            <p>Loading orders...</p>
-          </div>
+          <div className="op-empty"><span>⏳</span><p>Loading orders…</p></div>
+        ) : filtered.length === 0 ? (
+          <div className="op-empty"><span>📭</span><p>No orders found</p></div>
         ) : (
-          <>
-        {/* New Orders Column */}
-        <div className="order-column new-orders">
-          <div className="column-head">
-            <div className="column-title">
-              <span className="column-emoji">🔔</span>
-              <h3>New Orders</h3>
-            </div>
-            <span className="count-badge pulse">{getStatusCount("pending")}</span>
-          </div>
-          <div className="column-content">
-            {getOrdersByStatus("pending").length === 0 ? (
-              <div className="empty-state">
-                <span className="empty-icon">📭</span>
-                <p>No new orders</p>
-              </div>
-            ) : (
-              getOrdersByStatus("pending").map((order, idx) => (
-                <div key={order.id} className="order-box" onClick={() => setSelectedOrder(order)} style={{ animationDelay: `${idx * 0.1}s` }}>
-                  <div className="order-top">
-                    <span className="order-id">{order.id}</span>
-                    <span className="order-time">⏰ {order.time}</span>
-                  </div>
-                  <div className="order-customer-info">
-                    <div className="avatar">{order.customer.charAt(0)}</div>
-                    <div>
-                      <h4>{order.customer}</h4>
-                      <p>📞 {order.phone}</p>
-                    </div>
-                  </div>
-                  <div className="order-items-list">
-                    {order.items.slice(0, 2).map((item, idx) => (
-                      <span key={idx} className="item-pill">🍽️ {item.qty}x {item.name}</span>
-                    ))}
-                    {order.items.length > 2 && <span className="item-pill more">+{order.items.length - 2} more</span>}
-                  </div>
-                  <div className="order-bottom">
-                    <span className="order-price">₹{order.amount}</span>
-                    <button 
-                      className="btn-action btn-accept"
-                      onClick={(e) => { e.stopPropagation(); moveOrder(order.id, "preparing"); }}
-                    >
-                      ✓ Accept
-                    </button>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* Preparing Column */}
-        <div className="order-column preparing-orders">
-          <div className="column-head">
-            <div className="column-title">
-              <span className="column-emoji">👨‍🍳</span>
-              <h3>Preparing</h3>
-            </div>
-            <span className="count-badge">{getStatusCount("preparing")}</span>
-          </div>
-          <div className="column-content">
-            {getOrdersByStatus("preparing").length === 0 ? (
-              <div className="empty-state">
-                <span className="empty-icon">🍳</span>
-                <p>No orders preparing</p>
-              </div>
-            ) : (
-              getOrdersByStatus("preparing").map((order, idx) => (
-                <div key={order.id} className="order-box preparing" onClick={() => setSelectedOrder(order)} style={{ animationDelay: `${idx * 0.1}s` }}>
-                  <div className="order-top">
-                    <span className="order-id">{order.id}</span>
-                    <span className="order-time">⏰ {order.time}</span>
-                  </div>
-                  <div className="order-customer-info">
-                    <div className="avatar preparing">{order.customer.charAt(0)}</div>
-                    <div>
-                      <h4>{order.customer}</h4>
-                      <p>📞 {order.phone}</p>
-                    </div>
-                  </div>
-                  <div className="order-items-list">
-                    {order.items.slice(0, 2).map((item, idx) => (
-                      <span key={idx} className="item-pill">🍽️ {item.qty}x {item.name}</span>
-                    ))}
-                    {order.items.length > 2 && <span className="item-pill more">+{order.items.length - 2} more</span>}
-                  </div>
-                  <div className="order-bottom">
-                    <span className="order-price">₹{order.amount}</span>
-                    <button 
-                      className="btn-action btn-ready"
-                      onClick={(e) => { e.stopPropagation(); moveOrder(order.id, "ready"); }}
-                    >
-                      ✓ Ready
-                    </button>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* Ready Column */}
-        <div className="order-column ready-orders">
-          <div className="column-head">
-            <div className="column-title">
-              <span className="column-emoji">✅</span>
-              <h3>Ready</h3>
-            </div>
-            <span className="count-badge">{getStatusCount("ready")}</span>
-          </div>
-          <div className="column-content">
-            {getOrdersByStatus("ready").length === 0 ? (
-              <div className="empty-state">
-                <span className="empty-icon">📦</span>
-                <p>No orders ready</p>
-              </div>
-            ) : (
-              getOrdersByStatus("ready").map((order, idx) => (
-                <div key={order.id} className="order-box ready" onClick={() => setSelectedOrder(order)} style={{ animationDelay: `${idx * 0.1}s` }}>
-                  <div className="order-top">
-                    <span className="order-id">{order.id}</span>
-                    <span className="order-time">⏰ {order.time}</span>
-                  </div>
-                  <div className="order-customer-info">
-                    <div className="avatar ready">{order.customer.charAt(0)}</div>
-                    <div>
-                      <h4>{order.customer}</h4>
-                      <p>📞 {order.phone}</p>
-                    </div>
-                  </div>
-                  <div className="order-items-list">
-                    {order.items.slice(0, 2).map((item, idx) => (
-                      <span key={idx} className="item-pill">🍽️ {item.qty}x {item.name}</span>
-                    ))}
-                    {order.items.length > 2 && <span className="item-pill more">+{order.items.length - 2} more</span>}
-                  </div>
-                  <div className="order-bottom">
-                    <span className="order-price">₹{order.amount}</span>
-                    <button 
-                      className="btn-action btn-delivered"
-                      onClick={(e) => { e.stopPropagation(); moveOrder(order.id, "delivered"); }}
-                    >
-                      🚚 Deliver
-                    </button>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* Delivered Column */}
-        <div className="order-column delivered-orders">
-          <div className="column-head">
-            <div className="column-title">
-              <span className="column-emoji">🎉</span>
-              <h3>Delivered</h3>
-            </div>
-            <span className="count-badge success">{getStatusCount("delivered")}</span>
-          </div>
-          <div className="column-content">
-            {getOrdersByStatus("delivered").length === 0 ? (
-              <div className="empty-state">
-                <span className="empty-icon">🎉</span>
-                <p>No delivered orders</p>
-              </div>
-            ) : (
-              getOrdersByStatus("delivered").map((order, idx) => (
-                <div key={order.id} className="order-box completed" onClick={() => setSelectedOrder(order)} style={{ animationDelay: `${idx * 0.1}s` }}>
-                  <div className="order-top">
-                    <span className="order-id delivered">{order.id}</span>
-                    <span className="order-time">⏰ {order.time}</span>
-                  </div>
-                  <div className="order-customer-info">
-                    <div className="avatar delivered">{order.customer.charAt(0)}</div>
-                    <div>
-                      <h4>{order.customer}</h4>
-                      <p>📞 {order.phone}</p>
-                    </div>
-                  </div>
-                  <div className="order-bottom">
-                    <span className="order-price">₹{order.amount}</span>
-                    <span className="done-badge">✓ Completed</span>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-        </>
+          <table className="op-table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Items</th>
+                <th>Amount</th>
+                <th>Payment</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map(order => {
+                const opt = getStatusOpt(order.status);
+                return (
+                  <tr key={order.id} className="op-row">
+                    <td><span className="op-id">#{order.shortId}</span></td>
+                    <td>
+                      <div className="op-customer">
+                        <div className="op-avatar">{order.customer[0]}</div>
+                        <div>
+                          <div className="op-name">{order.customer}</div>
+                          <div className="op-phone">{order.phone}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="op-items">
+                        {order.items.slice(0, 2).map((item, i) => (
+                          <span key={i} className="op-item-pill">{item.qty}× {item.name}</span>
+                        ))}
+                        {order.items.length > 2 && (
+                          <span className="op-item-pill more">+{order.items.length - 2}</span>
+                        )}
+                      </div>
+                    </td>
+                    <td><span className="op-amount">₹{order.amount}</span></td>
+                    <td>
+                      <span className={`op-payment ${order.payment === "COD" ? "cod" : "online"}`}>
+                        {order.payment === "COD" ? "💵 COD" : "💳 Online"}
+                      </span>
+                    </td>
+                    <td><span className="op-time">{order.time}</span></td>
+                    <td onClick={e => e.stopPropagation()}>
+                      <div className="op-status-wrap" style={{ "--sc": opt.color }}>
+                        <select
+                          className="op-status-select"
+                          value={order.status}
+                          onChange={e => updateStatus(order.id, e.target.value)}
+                        >
+                          {STATUS_OPTIONS.map(s => (
+                            <option key={s.value} value={s.value}>{s.emoji} {s.label}</option>
+                          ))}
+                        </select>
+                        <span className="op-status-arrow">▾</span>
+                      </div>
+                    </td>
+                    <td>
+                      <button className="op-view-btn" onClick={() => setSelectedOrder(order)}>
+                        👁 View
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         )}
       </div>
 
-      {/* Order Details Modal */}
+      {/* ── Modal ── */}
       {selectedOrder && (
-        <div className="modal-new" onClick={() => setSelectedOrder(null)}>
-          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-head">
-              <h2>Order Details</h2>
-              <button className="close-btn" onClick={() => setSelectedOrder(null)}>✕</button>
-            </div>
-            <div className="modal-content">
-              <div className="info-section">
-                <h3>Order Info</h3>
-                <p><strong>Order ID:</strong> {selectedOrder.id}</p>
-                <p><strong>Status:</strong> <span className={`badge-${selectedOrder.status}`}>{selectedOrder.status}</span></p>
-                <p><strong>Payment:</strong> {selectedOrder.paymentMethod}</p>
-              </div>
-              <div className="info-section">
-                <h3>Customer</h3>
-                <p><strong>Name:</strong> {selectedOrder.customer}</p>
-                <p><strong>Phone:</strong> {selectedOrder.phone}</p>
-                <p><strong>Address:</strong> {selectedOrder.address}</p>
-              </div>
-              <div className="info-section">
-                <h3>Items</h3>
-                {selectedOrder.items.map((item, idx) => (
-                  <div key={idx} className="item-detail">
-                    <span>{item.name}</span>
-                    <span>x{item.qty}</span>
-                    <span>₹{item.price}</span>
-                  </div>
-                ))}
-                <div className="total-line">
-                  <strong>Total:</strong>
-                  <strong>₹{selectedOrder.amount}</strong>
+        <div className="op-modal-overlay" onClick={() => setSelectedOrder(null)}>
+          <div className="op-modal" onClick={e => e.stopPropagation()}>
+
+            {/* Modal Header */}
+            <div className="op-modal-header">
+              <div className="op-modal-title">
+                <span className="op-modal-icon">📦</span>
+                <div>
+                  <h2>Order Details</h2>
+                  <span className="op-modal-id">#{selectedOrder.shortId}</span>
                 </div>
               </div>
+              <button className="op-modal-close" onClick={() => setSelectedOrder(null)}>✕</button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="op-modal-body">
+
+              {/* Row 1: Order Info + Customer */}
+              <div className="op-modal-row2">
+                <div className="op-modal-card">
+                  <div className="op-modal-card-title">📋 Order Info</div>
+                  <div className="op-kv"><span>Order ID</span><span className="op-kv-mono">{selectedOrder.shortId}</span></div>
+                  <div className="op-kv">
+                    <span>Status</span>
+                    <span className="op-status-badge" style={{
+                      color: getStatusOpt(selectedOrder.status).color,
+                      borderColor: getStatusOpt(selectedOrder.status).color
+                    }}>
+                      {getStatusOpt(selectedOrder.status).emoji} {getStatusOpt(selectedOrder.status).label}
+                    </span>
+                  </div>
+                  <div className="op-kv"><span>Payment</span><span>{selectedOrder.payment}</span></div>
+                  <div className="op-kv"><span>Time</span><span>{selectedOrder.time}</span></div>
+                </div>
+
+                <div className="op-modal-card">
+                  <div className="op-modal-card-title">👤 Customer</div>
+                  <div className="op-kv"><span>Name</span><span>{selectedOrder.customer}</span></div>
+                  <div className="op-kv"><span>Phone</span><span>{selectedOrder.phone}</span></div>
+                  <div className="op-kv"><span>Email</span><span className="op-kv-wrap">{selectedOrder.email}</span></div>
+                  <div className="op-kv"><span>Address</span><span className="op-kv-wrap">{selectedOrder.address}</span></div>
+                </div>
+              </div>
+
+              {/* Row 2: Items */}
+              <div className="op-modal-card">
+                <div className="op-modal-card-title">🍽️ Items Ordered</div>
+                {selectedOrder.items.map((item, i) => (
+                  <div key={i} className="op-modal-item">
+                    <span className="op-modal-item-name">{item.name}</span>
+                    <span className="op-modal-item-qty">× {item.qty}</span>
+                    <span className="op-modal-item-price">₹{(item.price * item.qty).toLocaleString()}</span>
+                  </div>
+                ))}
+                <div className="op-modal-total">
+                  <span>Total</span>
+                  <span>₹{selectedOrder.amount.toLocaleString()}</span>
+                </div>
+              </div>
+
+              {/* Row 3: Update Status */}
+              <div className="op-modal-card">
+                <div className="op-modal-card-title">🔄 Update Status</div>
+                <div className="op-modal-status-wrap" style={{ "--sc": getStatusOpt(selectedOrder.status).color }}>
+                  <select
+                    className="op-modal-status-select"
+                    value={selectedOrder.status}
+                    onChange={e => updateStatus(selectedOrder.id, e.target.value)}
+                  >
+                    {STATUS_OPTIONS.map(opt => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.emoji} {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                  <span className="op-modal-status-arrow">▾</span>
+                </div>
+                <p className="op-modal-status-hint">
+                  Current: <strong style={{ color: getStatusOpt(selectedOrder.status).color }}>
+                    {getStatusOpt(selectedOrder.status).emoji} {getStatusOpt(selectedOrder.status).label}
+                  </strong>
+                </p>
+              </div>
+
+              {/* Row 4: Print Label */}
+              <button className="op-print-btn" onClick={() => printLabel(selectedOrder)}>
+                🖨️ Print Package Label
+              </button>
+
             </div>
           </div>
         </div>

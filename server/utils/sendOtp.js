@@ -1,17 +1,30 @@
 const nodemailer = require("nodemailer");
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
-
 const generateOtp = () =>
   Math.floor(100000 + Math.random() * 900000).toString();
 
 const sendOtpEmail = async (email, name, otp) => {
+  // ── Development fallback: print OTP to console if email not configured ──
+  if (
+    !process.env.EMAIL_USER ||
+    process.env.EMAIL_USER === "your_email@gmail.com" ||
+    !process.env.EMAIL_PASS ||
+    process.env.EMAIL_PASS === "your_email_app_password"
+  ) {
+    console.log("\n========================================");
+    console.log(`📧 OTP for ${email} (${name}): ${otp}`);
+    console.log("========================================\n");
+    return; // skip actual email sending
+  }
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
+
   const mailOptions = {
     from: `"The Hungry Hub 🍔" <${process.env.EMAIL_USER}>`,
     to: email,
