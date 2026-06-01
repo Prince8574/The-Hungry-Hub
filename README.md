@@ -1,4 +1,4 @@
-# 🍔 The Hungry Hub - Complete Food Ordering Platform
+# 🍔 The Hungry Hub — Complete Food Ordering Platform
 
 <div align="center">
 
@@ -8,9 +8,9 @@
 ![MongoDB](https://img.shields.io/badge/MongoDB-Database-47A248?style=for-the-badge&logo=mongodb)
 ![Express](https://img.shields.io/badge/Express-Backend-000000?style=for-the-badge&logo=express)
 
-**A modern, full-stack food ordering platform with real-time order management**
+**A modern, full-stack food ordering platform with real-time order management, delivery tracking & email notifications**
 
-[Features](#-features) • [Tech Stack](#-tech-stack) • [Installation](#-installation) • [Usage](#-usage) • [Screenshots](#-screenshots) • [API Documentation](#-api-documentation)
+[Features](#-features) • [Tech Stack](#-tech-stack) • [Installation](#-installation) • [API Docs](#-api-documentation) • [Screenshots](#-screenshots)
 
 </div>
 
@@ -26,172 +26,95 @@
 - [Environment Variables](#-environment-variables)
 - [Usage](#-usage)
 - [API Documentation](#-api-documentation)
-- [Screenshots](#-screenshots)
 - [Contributing](#-contributing)
-- [License](#-license)
 
 ---
 
 ## 🌟 Overview
 
-**The Hungry Hub** is a comprehensive food ordering platform that connects customers with restaurants. It features a beautiful client-facing application for browsing and ordering food, and a powerful admin panel for managing menu items, orders, and restaurant operations.
+**The Hungry Hub** is a comprehensive food ordering platform with **4 applications**:
 
-### Key Highlights
-
-- 🎨 **Modern UI/UX** - Beautiful, responsive design with smooth animations
-- 🛒 **Complete Order Flow** - From cart to delivery tracking
-- 👨‍💼 **Admin Dashboard** - Comprehensive restaurant management
-- 🔐 **Secure Authentication** - JWT-based auth with OTP verification
-- 💳 **Multiple Payment Options** - COD, UPI, Cards, Wallets, Net Banking
-- 📱 **Fully Responsive** - Works seamlessly on all devices
-- ⚡ **Real-time Updates** - Live order status tracking
+| App | Port | Description |
+|-----|------|-------------|
+| 🛍️ **Client** | 5173 | Customer-facing food ordering app |
+| 👨‍💼 **Admin Panel** | 5175 | Restaurant management dashboard |
+| 🚚 **Delivery Panel** | 5176 | Delivery partner portal |
+| ⚙️ **Server** | 5000 | REST API backend |
 
 ---
 
 ## ✨ Features
 
-### 🛍️ Customer Features
-
-#### Menu & Ordering
-- Browse menu with beautiful card layouts
-- Category-wise filtering (Burgers, Pizza, Pasta, Indian, etc.)
-- Search functionality
-- VEG/NON-VEG indicators
-- Discount badges and pricing
-- Out of stock indicators
+### 🛍️ Customer App
+- Browse menu with category filters & search
 - Add to cart with quantity management
-- Wishlist functionality
+- Wishlist functionality (synced with backend)
+- 2-step checkout — address + payment
+- Multiple payment options (COD, UPI, Cards, Wallets)
+- Coupon codes (`HUNGRY10`, `FIRST50`)
+- Real-time order tracking with timeline
+- Order history & reorder
+- OTP-based email verification for registration
+- Profile management & address book
 
-#### Cart & Checkout
-- View cart with item details
-- Apply coupon codes (HUNGRY10, FIRST50)
-- Automatic delivery fee calculation
-- Free delivery on orders above ₹299
-- 2-step checkout process:
-  1. Delivery address selection/addition
-  2. Payment method selection
-- Multiple payment options
+### 👨‍💼 Admin Panel
+- **Dashboard** — revenue, order stats, analytics
+- **Menu Management** — CRUD with image upload, category filter dropdown, discount badges, veg/non-veg indicators
+- **Orders** — table view with status dropdown, print package label (PDF)
+- **Admin Management** — create/edit/delete admins with role-based access (Admin / Super Admin / Delivery)
+- **Email credentials** — auto-send login credentials to new admin's email
+- **Settings** — restaurant configuration
 
-#### Order Management
-- View order history
-- Real-time order status tracking
-- Order timeline visualization
-- Cancel orders (pending/confirmed only)
-- Reorder functionality
-- Order details modal
+### 🚚 Delivery Panel
+- Dedicated login for delivery partners
+- Dashboard with stats (pending, delivering, today, total)
+- Active orders with pick up & deliver actions
+- **OTP-based delivery confirmation** — customer gets OTP on email, delivery boy verifies
+- Order detail with Google Maps link
+- Profile management
 
-#### User Profile
-- Update personal information
-- Manage delivery addresses
-- View order history
-- Account settings
+### 📧 Email Notifications (All Status Changes)
+Customers receive beautiful HTML emails for every order update:
+- 🔔 Order Received
+- ✅ Order Confirmed
+- 👨‍🍳 Being Prepared
+- 🚚 Out for Delivery
+- 🎉 Order Delivered
+- ❌ Order Cancelled
 
-### 👨‍💼 Admin Features
+Each email includes:
+- Visual progress tracker
+- Order items summary
+- Delivery address
+- Payment info
 
-#### Dashboard
-- Overview statistics
-- Revenue tracking
-- Order analytics
-- Quick actions
-
-#### Menu Management
-- **CRUD Operations** - Create, Read, Update, Delete menu items
-- **Rich Form** - Comprehensive item details:
-  - Name, Description, Price
-  - Discount percentage
-  - Category selection
-  - Image URL
-  - VEG/NON-VEG toggle
-  - Spicy level (0-3)
-  - Preparation time
-  - Stock quantity
-- **Visual Cards** - Beautiful menu item cards with:
-  - VEG/NON-VEG icon
-  - Out of stock ribbon
-  - Discount display
-  - Quick actions (Edit, Delete, Toggle Stock, Toggle Availability)
-- **Filters** - Category and stock filters
-- **Search** - Search by item name
-- **Export** - Export menu as JSON/CSV
-
-#### Order Management
-- **Kanban Board** - Visual order workflow:
-  - New Orders → Preparing → Ready → Delivered
-- **Real-time Updates** - Auto-refresh every 30 seconds
-- **Order Details** - Complete order information:
-  - Customer details
-  - Items ordered
-  - Delivery address
-  - Payment method
-  - Total amount
-- **Status Updates** - One-click status changes
-- **Search** - Search by order ID or customer name
-
-#### Settings
-- Restaurant information
-- Operating hours
-- Delivery settings
-- Payment configuration
-
-### 🔐 Super Admin Features
-
-#### Role-Based Access Control
-- **Two Admin Levels**:
-  - **Admin** - Menu and order management only
-  - **Super Admin** - Full system access
-- **Same Login Page** - Role detected automatically
-- **Dynamic Menu** - Features shown based on role
-
-#### Admin Management (Super Admin Only)
-- **View All Admins** - List of all admin users
-- **Create Admins** - Add new admin or super admin users
-- **Edit Admins** - Update admin details and roles
-- **Delete Admins** - Remove admin users (cannot delete super admins)
-- **Statistics** - Total admins, super admins, and users
-- **Role Indicator** - Shows user role in sidebar
-
-#### Demo Credentials
-- **Super Admin**:
-  - Email: `superadmin@hungry.com`
-  - Password: `super123`
-- **Admin**:
-  - Email: `admin@hungry.com`
-  - Password: `admin123`
+### 🔐 Authentication & Security
+- JWT-based authentication
+- OTP email verification for customer registration
+- Role-based access control (user / admin / super_admin / delivery)
+- Password hashing with bcrypt
+- CORS protection
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Frontend
-
-#### Client Application
-- **React 18.3.1** - UI library
-- **React Router DOM** - Routing
-- **Vite** - Build tool
-- **GSAP** - Animations
-- **Axios** - HTTP client
-- **React Hot Toast** - Notifications
-
-#### Admin Panel
-- **React 18.3.1** - UI library
-- **React Router DOM** - Routing
-- **Vite** - Build tool
-- **GSAP** - Animations
-- **Axios** - HTTP client
-- **React Hot Toast** - Notifications
+### Frontend (Client + Admin + Delivery)
+- **React 18** — UI library
+- **React Router DOM** — routing
+- **Vite** — build tool
+- **GSAP** — animations
+- **Axios** — HTTP client
+- **React Hot Toast** — notifications
 
 ### Backend
-- **Node.js** - Runtime environment
-- **Express.js** - Web framework
-- **MongoDB** - Database
-- **Mongoose** - ODM
-- **JWT** - Authentication
-- **Bcrypt** - Password hashing
-- **Nodemailer** - Email service
-- **Multer** - File uploads
-- **Cloudinary** - Image hosting
-- **Express Validator** - Input validation
-- **CORS** - Cross-origin resource sharing
+- **Node.js + Express** — server
+- **MongoDB + Mongoose** — database
+- **JWT** — authentication
+- **Bcrypt** — password hashing
+- **Nodemailer** — email service (Gmail)
+- **Multer + Cloudinary** — image uploads
+- **Express Validator** — input validation
 
 ---
 
@@ -199,79 +122,31 @@
 
 ```
 The-Hungry-Hub/
-├── client/                 # Customer-facing application
-│   ├── public/
-│   ├── src/
-│   │   ├── assets/
-│   │   ├── components/
-│   │   │   ├── auth/
-│   │   │   ├── home/
-│   │   │   └── menu/
-│   │   ├── context/
-│   │   │   ├── CartContext.jsx
-│   │   │   └── WishlistContext.jsx
-│   │   ├── pages/
-│   │   │   ├── Home.jsx
-│   │   │   ├── Menu.jsx
-│   │   │   ├── Cart.jsx
-│   │   │   ├── Orders.jsx
-│   │   │   ├── Profile.jsx
-│   │   │   ├── Login.jsx
-│   │   │   └── Register.jsx
-│   │   ├── styles/
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   ├── package.json
-│   └── vite.config.js
+├── client/                 # Customer app (port 5173)
+│   └── src/
+│       ├── components/     # Navbar, auth, home, menu components
+│       ├── context/        # CartContext, WishlistContext
+│       ├── pages/          # Home, Menu, Cart, Orders, Profile, Wishlist
+│       └── styles/
 │
-├── admin/                  # Admin panel
-│   ├── public/
-│   ├── src/
-│   │   ├── assets/
-│   │   ├── components/
-│   │   │   ├── Navbar.jsx
-│   │   │   ├── Sidebar.jsx
-│   │   │   └── AuthLeft.jsx
-│   │   ├── pages/
-│   │   │   ├── Dashboard.jsx
-│   │   │   ├── MenuManagement.jsx
-│   │   │   ├── MenuItemForm.jsx
-│   │   │   ├── Orders.jsx
-│   │   │   ├── Settings.jsx
-│   │   │   └── Login.jsx
-│   │   ├── styles/
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   ├── package.json
-│   └── vite.config.js
+├── admin/                  # Admin panel (port 5175)
+│   └── src/
+│       ├── components/     # Navbar, Sidebar
+│       ├── pages/          # Dashboard, Orders, MenuManagement, Admins, AddAdmin, Settings
+│       └── styles/
 │
-├── server/                 # Backend API
-│   ├── middleware/
-│   │   └── auth.js
-│   ├── models/
-│   │   ├── User.js
-│   │   ├── MenuItem.js
-│   │   ├── Order.js
-│   │   ├── Cart.js
-│   │   ├── Wishlist.js
-│   │   └── Address.js
-│   ├── routes/
-│   │   ├── auth.js
-│   │   ├── menu.js
-│   │   ├── orders.js
-│   │   ├── cart.js
-│   │   ├── wishlist.js
-│   │   └── user.js
-│   ├── utils/
-│   │   ├── cloudinary.js
-│   │   └── sendOtp.js
-│   ├── index.js
-│   ├── createAdmin.js
-│   └── package.json
+├── delivery/               # Delivery panel (port 5176)
+│   └── src/
+│       ├── components/     # Layout (sidebar)
+│       └── pages/          # Login, Dashboard, Orders, OrderDetail, Profile
 │
-├── .gitignore
-├── README.md
-└── Documentation files (.md)
+├── server/                 # Backend API (port 5000)
+│   ├── middleware/         # auth.js
+│   ├── models/             # User, MenuItem, Order, Cart, Wishlist, Address
+│   ├── routes/             # auth, menu, orders, cart, wishlist, user, admin, delivery
+│   └── utils/              # sendOtp.js, cloudinary.js, orderNotifications.js
+│
+└── README.md
 ```
 
 ---
@@ -279,114 +154,84 @@ The-Hungry-Hub/
 ## 🚀 Installation
 
 ### Prerequisites
+- **Node.js** v16+
+- **MongoDB** (Atlas or local)
+- **Gmail account** with App Password
 
-- **Node.js** (v16 or higher)
-- **MongoDB** (local or Atlas)
-- **npm** or **yarn**
-
-### Clone Repository
-
+### 1. Clone Repository
 ```bash
 git clone https://github.com/Prince8574/The-Hungry-Hub.git
 cd The-Hungry-Hub
 ```
 
-### Backend Setup
-
+### 2. Server Setup
 ```bash
 cd server
 npm install
-
-# Create .env file
 cp .env.example .env
-
 # Edit .env with your credentials
-# Start server
 npm start
 ```
 
-Server will run on `http://localhost:5000`
-
-### Client Setup
-
+### 3. Client Setup
 ```bash
 cd client
 npm install
-
-# Create .env file
-cp .env.example .env
-
-# Edit .env with API URL
-# Start client
+# Create .env with VITE_API_URL=http://localhost:5000/api
 npm run dev
 ```
 
-Client will run on `http://localhost:5173`
-
-### Admin Panel Setup
-
+### 4. Admin Panel Setup
 ```bash
 cd admin
 npm install
-
-# Start admin panel
 npm run dev
 ```
 
-Admin panel will run on `http://localhost:5175`
-
-### Create Admin User
-
+### 5. Delivery Panel Setup
 ```bash
-cd server
-node createAdmin.js
+cd delivery
+npm install
+npm run dev
 ```
 
-Default admin credentials:
-- Email: `admin@hungry.com`
-- Password: `admin123`
+### 6. Seed Menu Items
+```bash
+cd server
+node seedMenu.js
+```
+
+### 7. Create Super Admin
+```bash
+node createSuperAdmin.js
+```
+
+### 8. Create Delivery Boy
+```bash
+node createDeliveryBoy.js
+```
 
 ---
 
 ## 🔐 Environment Variables
 
-### Server (.env)
-
+### Server `.env`
 ```env
-# Server
 PORT=5000
 NODE_ENV=development
-
-# Database
-MONGODB_URI=mongodb://localhost:27017/hungry-hub
-# or MongoDB Atlas
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/hungry-hub
-
-# JWT
-JWT_SECRET=your-super-secret-jwt-key-change-this
-
-# Email (for OTP)
-EMAIL_USER=your-email@gmail.com
-EMAIL_PASS=your-app-password
-
-# Cloudinary (for image uploads)
-CLOUDINARY_CLOUD_NAME=your-cloud-name
-CLOUDINARY_API_KEY=your-api-key
-CLOUDINARY_API_SECRET=your-api-secret
-
-# CORS
+MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/TheHungryHub
+JWT_SECRET=your_jwt_secret_key
+JWT_EXPIRE=7d
+EMAIL_USER=your_gmail@gmail.com
+EMAIL_PASS=your_gmail_app_password
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
 CLIENT_URL=http://localhost:5173
 ADMIN_URL=http://localhost:5175
 ```
 
-### Client (.env)
-
-```env
-VITE_API_URL=http://localhost:5000/api
-```
-
-### Admin (.env)
-
+### Client `.env`
 ```env
 VITE_API_URL=http://localhost:5000/api
 ```
@@ -395,44 +240,48 @@ VITE_API_URL=http://localhost:5000/api
 
 ## 💻 Usage
 
-### Starting All Services
-
-#### Option 1: Manual Start
-
+### Start All Services
 ```bash
-# Terminal 1 - Backend
-cd server
-npm start
+# Terminal 1 — Backend
+cd server && npm start
 
-# Terminal 2 - Client
-cd client
-npm run dev
+# Terminal 2 — Client
+cd client && npm run dev
 
-# Terminal 3 - Admin
-cd admin
-npm run dev
+# Terminal 3 — Admin
+cd admin && npm run dev
+
+# Terminal 4 — Delivery
+cd delivery && npm run dev
 ```
 
-#### Option 2: Using Concurrently (if configured)
-
-```bash
-npm run dev:all
-```
-
-### Access Applications
-
-- **Client**: http://localhost:5173
-- **Admin**: http://localhost:5175
-- **API**: http://localhost:5000
+### Access URLs
+| Service | URL |
+|---------|-----|
+| Customer App | http://localhost:5173 |
+| Admin Panel | http://localhost:5175 |
+| Delivery Panel | http://localhost:5176 |
+| API | http://localhost:5000 |
 
 ### Default Credentials
 
-#### Admin
-- Email: `admin@hungry.com`
-- Password: `admin123`
+#### Super Admin
+```
+Email:    superadmin@hungry.com
+Password: super123
+```
 
-#### Test User (Register new user or use existing)
-- Register at: http://localhost:5173/register
+#### Admin
+```
+Email:    admin@hungry.com
+Password: admin123
+```
+
+#### Delivery Boy
+```
+Email:    delivery@hungry.com
+Password: delivery123
+```
 
 ---
 
@@ -443,314 +292,105 @@ npm run dev:all
 http://localhost:5000/api
 ```
 
-### Authentication Endpoints
-
-#### Register User
-```http
-POST /auth/register
-Content-Type: application/json
-
-{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "password123",
-  "otp": "123456"
-}
-```
-
-#### Login
-```http
-POST /auth/login
-Content-Type: application/json
-
-{
-  "email": "john@example.com",
-  "password": "password123"
-}
-```
-
-#### Send OTP
-```http
-POST /auth/send-otp
-Content-Type: application/json
-
-{
-  "email": "john@example.com",
-  "name": "John Doe"
-}
-```
+### Auth Endpoints
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/auth/send-otp` | Send OTP to email |
+| POST | `/auth/register` | Register with OTP |
+| POST | `/auth/login` | Login |
+| POST | `/auth/logout` | Logout |
 
 ### Menu Endpoints
-
-#### Get All Menu Items (Public)
-```http
-GET /menu
-```
-
-#### Get All Menu Items (Admin)
-```http
-GET /menu/all
-Authorization: Bearer <admin-token>
-```
-
-#### Create Menu Item
-```http
-POST /menu
-Authorization: Bearer <admin-token>
-Content-Type: application/json
-
-{
-  "name": "Margherita Pizza",
-  "description": "Classic pizza with tomato and mozzarella",
-  "price": 299,
-  "discount": 10,
-  "category": "Pizza",
-  "image": "https://example.com/image.jpg",
-  "isVeg": true,
-  "spicyLevel": 0,
-  "preparationTime": 20,
-  "stock": 50
-}
-```
-
-#### Update Menu Item
-```http
-PUT /menu/:id
-Authorization: Bearer <admin-token>
-Content-Type: application/json
-
-{
-  "price": 349,
-  "discount": 15
-}
-```
-
-#### Delete Menu Item
-```http
-DELETE /menu/:id
-Authorization: Bearer <admin-token>
-```
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/menu` | Get available items (public) |
+| GET | `/menu/all` | Get all items (admin) |
+| POST | `/menu` | Create item (admin) |
+| PUT | `/menu/:id` | Update item (admin) |
+| DELETE | `/menu/:id` | Delete item (admin) |
 
 ### Order Endpoints
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/orders` | Place order |
+| GET | `/orders` | Get user orders |
+| GET | `/orders/all` | Get all orders (admin) |
+| PUT | `/orders/:id/status` | Update status (admin) |
+| PUT | `/orders/:id/cancel` | Cancel order |
 
-#### Place Order
-```http
-POST /orders
-Authorization: Bearer <token>
-Content-Type: application/json
+### Delivery Endpoints
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/delivery/login` | Delivery boy login |
+| GET | `/delivery/orders` | Get active orders |
+| PUT | `/delivery/orders/:id/status` | Update to out_for_delivery |
+| POST | `/delivery/orders/:id/send-otp` | Send delivery OTP to customer |
+| POST | `/delivery/orders/:id/verify-otp` | Verify OTP & mark delivered |
+| GET | `/delivery/stats` | Get delivery stats |
 
-{
-  "items": [
-    {
-      "menuItemId": "item-id",
-      "qty": 2
-    }
-  ],
-  "deliveryAddress": {
-    "line": "123 Main St",
-    "city": "Mumbai",
-    "pincode": "400001"
-  },
-  "paymentMethod": "cod",
-  "couponCode": "HUNGRY10"
-}
-```
-
-#### Get User Orders
-```http
-GET /orders
-Authorization: Bearer <token>
-```
-
-#### Get All Orders (Admin)
-```http
-GET /orders/all
-Authorization: Bearer <admin-token>
-```
-
-#### Update Order Status (Admin)
-```http
-PUT /orders/:id/status
-Authorization: Bearer <admin-token>
-Content-Type: application/json
-
-{
-  "status": "preparing"
-}
-```
-
-#### Cancel Order
-```http
-PUT /orders/:id/cancel
-Authorization: Bearer <token>
-```
-
-### Cart Endpoints
-
-#### Get Cart
-```http
-GET /cart
-Authorization: Bearer <token>
-```
-
-#### Add to Cart
-```http
-POST /cart
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "menuItemId": "item-id",
-  "qty": 1
-}
-```
-
-#### Update Cart Item
-```http
-PUT /cart/:itemId
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "qty": 3
-}
-```
-
-#### Remove from Cart
-```http
-DELETE /cart/:itemId
-Authorization: Bearer <token>
-```
-
-#### Clear Cart
-```http
-DELETE /cart
-Authorization: Bearer <token>
-```
-
-### Wishlist Endpoints
-
-#### Get Wishlist
-```http
-GET /wishlist
-Authorization: Bearer <token>
-```
-
-#### Add to Wishlist
-```http
-POST /wishlist
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "menuItemId": "item-id"
-}
-```
-
-#### Remove from Wishlist
-```http
-DELETE /wishlist/:itemId
-Authorization: Bearer <token>
-```
+### Admin Endpoints
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/admin/admins` | Get all admins |
+| POST | `/admin/admins` | Create admin (sends email) |
+| PUT | `/admin/admins/:id` | Update admin |
+| DELETE | `/admin/admins/:id` | Delete admin |
 
 ---
 
-## 📸 Screenshots
+## 🎯 Key Features Detail
 
-### Client Application
-
-#### Home Page
-Beautiful landing page with hero section, categories, popular dishes, and testimonials.
-
-#### Menu Page
-Browse menu items with filters, search, and category selection.
-
-#### Cart Page
-View cart items, apply coupons, and proceed to checkout.
-
-#### Checkout
-2-step checkout process with address selection and payment method.
-
-#### Orders Page
-View order history with status tracking and timeline.
-
-### Admin Panel
-
-#### Dashboard
-Overview of orders, revenue, and quick stats.
-
-#### Menu Management
-Manage menu items with CRUD operations and visual cards.
-
-#### Order Management
-Kanban board for managing orders from new to delivered.
-
----
-
-## 🎯 Features in Detail
-
-### Discount System
-- Admin can set discount percentage (0-100%)
-- Automatic price calculation
-- Display original price (strikethrough) + discounted price
-- Discount badge on cards
+### Delivery OTP Flow
+1. Delivery boy picks up order → status: `out_for_delivery`
+2. At customer door → clicks "Mark Delivered"
+3. OTP sent to customer's email (6-digit, 10 min expiry)
+4. Customer shares OTP with delivery boy
+5. Delivery boy enters OTP → order marked `delivered`
+6. Customer receives delivery confirmation email
 
 ### Order Status Flow
 ```
 Pending → Confirmed → Preparing → Out for Delivery → Delivered
+                                                    ↘ Cancelled
 ```
 
 ### Coupon System
-- **HUNGRY10** - 10% discount
-- **FIRST50** - ₹50 flat discount
+| Code | Discount |
+|------|----------|
+| `HUNGRY10` | 10% off |
+| `FIRST50` | ₹50 flat off |
 
 ### Delivery Fee
 - Free delivery on orders above ₹299
-- ₹49 delivery fee for orders below ₹299
-
-### Authentication
-- JWT-based authentication
-- OTP verification for registration
-- Password hashing with bcrypt
-- Token expiry: 7 days
+- ₹49 delivery fee otherwise
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow these steps:
-
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
+2. Create feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
 ---
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License — see [LICENSE](LICENSE) for details.
 
 ---
 
-## 👥 Authors
+## 👥 Author
 
-- **Prince Kumar Singh** - [@Prince8574](https://github.com/Prince8574)
-
----
-
-## 🙏 Acknowledgments
-
-- React team for the amazing library
-- MongoDB team for the database
-- All open-source contributors
+- **Prince Kumar Singh** — [@Prince8574](https://github.com/Prince8574)
 
 ---
 
 ## 📞 Support
 
-For support, email mrprincekumarsingh143@gmail.com or open an issue on GitHub.
+For support: mrprincekumarsingh143@gmail.com
 
 ---
 
