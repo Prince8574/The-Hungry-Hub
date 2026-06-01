@@ -71,6 +71,11 @@ const orderSchema = new mongoose.Schema(
     estimatedDelivery: {
       type: Date,
     },
+    assignedTo: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
   },
   { timestamps: true }
 );

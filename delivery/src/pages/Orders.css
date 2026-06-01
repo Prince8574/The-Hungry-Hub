@@ -1,0 +1,43 @@
+.dp-orders { animation:dp-fade 0.4s ease; }
+.dp-orders-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem; }
+.dp-orders-head h1 { font-size:1.6rem; color:#fff; font-weight:700; margin:0 0 0.3rem; }
+.dp-orders-head p  { font-size:0.85rem; color:#777; margin:0; }
+.dp-refresh { padding:0.6rem 1.2rem; background:rgba(255,107,0,0.1); border:1px solid rgba(255,107,0,0.3); border-radius:8px; color:#ff6b00; font-size:0.85rem; font-weight:600; cursor:pointer; font-family:inherit; }
+.dp-refresh:hover { background:rgba(255,107,0,0.18); }
+.dp-filters { display:flex; gap:1rem; margin-bottom:1.5rem; flex-wrap:wrap; align-items:center; }
+.dp-search { position:relative; display:flex; align-items:center; flex:1; min-width:200px; }
+.dp-search span { position:absolute; left:0.85rem; font-size:0.9rem; pointer-events:none; }
+.dp-search input { width:100%; padding:0.65rem 1rem 0.65rem 2.5rem; background:rgba(255,255,255,0.04); border:1px solid rgba(255,107,0,0.2); border-radius:8px; color:#fff; font-size:0.88rem; font-family:inherit; outline:none; }
+.dp-search input:focus { border-color:#ff6b00; }
+.dp-search input::placeholder { color:#444; }
+.dp-pills { display:flex; gap:0.4rem; flex-wrap:wrap; }
+.dp-fpill { padding:0.45rem 0.9rem; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:20px; color:#888; font-size:0.8rem; font-weight:500; cursor:pointer; transition:all 0.15s; font-family:inherit; }
+.dp-fpill:hover { border-color:rgba(255,107,0,0.3); color:#ccc; }
+.dp-fpill.active { border-color:#ff6b00; color:#ff6b00; background:rgba(255,107,0,0.08); font-weight:600; }
+.dp-list { display:flex; flex-direction:column; gap:0.75rem; }
+.dp-row { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:1.1rem 1.3rem; display:flex; align-items:center; gap:1.5rem; transition:border-color 0.15s; }
+.dp-row:hover { border-color:rgba(255,107,0,0.2); }
+.dp-row-l { min-width:190px; display:flex; flex-direction:column; gap:0.4rem; }
+.dp-oid { font-family:monospace; font-size:0.82rem; font-weight:700; color:#ff6b00; background:rgba(255,107,0,0.08); padding:0.2rem 0.55rem; border-radius:5px; display:inline-block; }
+.dp-cust-info { display:flex; flex-direction:column; gap:0.1rem; }
+.dp-cust-info strong { font-size:0.9rem; color:#fff; }
+.dp-cust-info span   { font-size:0.75rem; color:#777; }
+.dp-addr-sm { font-size:0.78rem; color:#aaa; }
+.dp-row-m { flex:1; display:flex; flex-direction:column; gap:0.5rem; }
+.dp-items { display:flex; flex-wrap:wrap; gap:0.35rem; }
+.dp-pill { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); padding:0.2rem 0.55rem; border-radius:5px; font-size:0.75rem; color:#ccc; }
+.dp-pill.more { border-color:rgba(255,107,0,0.4); color:#ff6b00; font-weight:600; }
+.dp-meta { display:flex; align-items:center; gap:1rem; }
+.dp-amt  { font-size:0.95rem; font-weight:700; color:#4caf50; }
+.dp-time { font-size:0.75rem; color:#666; }
+.dp-row-r { display:flex; flex-direction:column; align-items:flex-end; gap:0.6rem; min-width:150px; }
+.dp-sbadge { padding:0.22rem 0.65rem; border:1.5px solid; border-radius:20px; font-size:0.75rem; font-weight:600; white-space:nowrap; }
+.dp-row-actions { display:flex; gap:0.4rem; }
+.dp-btn { padding:0.45rem 0.8rem; border-radius:7px; font-size:0.78rem; font-weight:600; cursor:pointer; text-decoration:none; border:none; transition:opacity 0.15s; font-family:inherit; white-space:nowrap; }
+.dp-btn.pickup  { background:#9c27b0; color:#fff; }
+.dp-btn.deliver { background:#4caf50; color:#fff; }
+.dp-btn.view    { background:rgba(255,107,0,0.12); color:#ff6b00; border:1px solid rgba(255,107,0,0.3); }
+.dp-btn:hover { opacity:0.85; }
+.dp-empty { text-align:center; padding:4rem 2rem; color:#666; display:flex; flex-direction:column; align-items:center; gap:0.75rem; }
+.dp-empty span { font-size:3rem; }
+@media(max-width:768px) { .dp-row { flex-direction:column; align-items:flex-start; } .dp-row-r { align-items:flex-start; } }

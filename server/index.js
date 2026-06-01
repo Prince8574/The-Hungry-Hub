@@ -17,9 +17,10 @@ app.use(helmet());
 // CORS - Allow multiple origins
 const allowedOrigins = [
   'http://localhost:5173',
-  'http://localhost:5174', 
+  'http://localhost:5174',
   'http://localhost:5175',
-  'http://localhost:5176'
+  'http://localhost:5176',
+  'http://localhost:5177',
 ];
 
 app.use(cors({
@@ -67,6 +68,7 @@ app.use('/api/cart', require('./routes/cart'));
 app.use('/api/wishlist', require('./routes/wishlist'));
 app.use('/api/orders', require('./routes/orders'));
 app.use('/api/admin', require('./routes/admin'));
+app.use('/api/delivery', require('./routes/delivery'));
 
 // Global error handler
 app.use((err, req, res, next) => {
