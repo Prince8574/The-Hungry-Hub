@@ -168,8 +168,9 @@ export default function AddAdmin() {
               <div className="aa-card-title">🔑 Role</div>
               <div className="aa-role-list">
                 {[
-                  { val: "admin",       label: "🔧 Admin",      desc: "Menu & order management" },
-                  { val: "super_admin", label: "⭐ Super Admin", desc: "Full system access" },
+                  { val: "admin",       label: "🔧 Admin",       desc: "Menu & order management" },
+                  { val: "super_admin", label: "⭐ Super Admin",  desc: "Full system access" },
+                  { val: "delivery",    label: "🚚 Delivery Boy", desc: "Delivery & order pickup" },
                 ].map(r => (
                   <div
                     key={r.val}

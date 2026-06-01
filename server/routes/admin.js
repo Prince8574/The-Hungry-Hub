@@ -356,7 +356,7 @@ router.post("/admins", protect, restrictTo("super_admin"), async (req, res) => {
 
     const admin = await User.create({
       name, email, password,
-      role:       role === "super_admin" ? "admin" : (role || "admin"),
+      role: ["delivery", "admin"].includes(role) ? role : "admin",
       isVerified: true,
       phone:      phone      || "",
       department: department || "",

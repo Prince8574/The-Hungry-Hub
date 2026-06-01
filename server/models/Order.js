@@ -76,6 +76,10 @@ const orderSchema = new mongoose.Schema(
       ref: "User",
       default: null,
     },
+    deliveryOtp: {
+      code:      { type: String, default: null },
+      expiresAt: { type: Date,   default: null },
+    },
   },
   { timestamps: true }
 );

@@ -5,6 +5,7 @@ const { protect, adminOnly } = require('../middleware/auth');
 const Order = require('../models/Order');
 const MenuItem = require('../models/MenuItem');
 const Cart = require('../models/Cart');
+const { sendOrderNotification } = require('../utils/orderNotifications');
 
 // ── Coupon definitions ────────────────────────────────────────
 const COUPONS = {
@@ -167,6 +168,11 @@ router.post('/', protect, placeOrderValidation, async (req, res, next) => {
     // Clear user's cart after order placed
     await Cart.findOneAndUpdate({ user: req.user._id }, { items: [] });
 
+    // Send order placed notification
+    try {
+      await sendOrderNotification(order, req.user.email, req.user.name);
+    } catch (e) { console.error("Notification error:", e.message); }
+
     res.status(201).json({ message: 'Order placed successfully', order });
   } catch (err) {
     next(err);
@@ -200,6 +206,14 @@ router.put('/:id/cancel', protect, async (req, res, next) => {
     order.status = 'cancelled';
     await order.save();
 
+    // Send cancellation notification
+    try {
+      const populatedOrder = await Order.findById(order._id).populate('user', 'name email');
+      if (populatedOrder?.user?.email) {
+        await sendOrderNotification(populatedOrder, populatedOrder.user.email, populatedOrder.user.name);
+      }
+    } catch (e) { console.error("Notification error:", e.message); }
+
     res.json({ message: 'Order cancelled successfully', order });
   } catch (err) {
     next(err);
@@ -226,6 +240,16 @@ router.put('/:id/status', protect, adminOnly, async (req, res, next) => {
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
     }
+
+    // Send status notification to customer
+    try {
+      const populatedOrder = await Order.findById(req.params.id)
+        .populate('user', 'name email')
+        .populate('items.menuItem', 'name');
+      if (populatedOrder?.user?.email) {
+        await sendOrderNotification(populatedOrder, populatedOrder.user.email, populatedOrder.user.name);
+      }
+    } catch (e) { console.error("Notification error:", e.message); }
 
     res.json({ message: 'Order status updated', order });
   } catch (err) {

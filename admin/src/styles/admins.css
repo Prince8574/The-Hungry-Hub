@@ -131,6 +131,12 @@
   border: 1px solid rgba(33,150,243,0.3);
 }
 
+.adm-role-badge.delivery {
+  background: rgba(156,39,176,0.12);
+  color: #9c27b0;
+  border: 1px solid rgba(156,39,176,0.3);
+}
+
 .adm-status {
   font-size: 0.78rem;
   font-weight: 600;

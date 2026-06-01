@@ -118,8 +118,8 @@ export default function Admins() {
                   <td className="adm-phone">{admin.phone || "—"}</td>
                   <td className="adm-phone">{admin.department || "—"}</td>
                   <td>
-                    <span className={`adm-role-badge ${admin.role === "super_admin" ? "super" : "admin"}`}>
-                      {admin.role === "super_admin" ? "⭐ Super Admin" : "🔧 Admin"}
+                    <span className={`adm-role-badge ${admin.role === "super_admin" ? "super" : admin.role === "delivery" ? "delivery" : "admin"}`}>
+                      {admin.role === "super_admin" ? "⭐ Super Admin" : admin.role === "delivery" ? "🚚 Delivery" : "🔧 Admin"}
                     </span>
                   </td>
                   <td>

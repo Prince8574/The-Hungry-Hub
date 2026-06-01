@@ -37,3 +37,90 @@
 .dp-btn.view    { background:rgba(255,107,0,0.12); color:#ff6b00; border:1px solid rgba(255,107,0,0.3); }
 .dp-empty { text-align:center; padding:4rem 2rem; color:#666; display:flex; flex-direction:column; align-items:center; gap:0.75rem; }
 .dp-empty span { font-size:3rem; }
+
+/* ── OTP Modal ── */
+.dp-otp-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000; backdrop-filter: blur(6px);
+  padding: 1rem; animation: dp-fade 0.2s ease;
+}
+
+.dp-otp-modal {
+  background: #161616;
+  border: 1px solid rgba(255,107,0,0.3);
+  border-radius: 16px; width: 100%; max-width: 380px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.7); overflow: hidden;
+}
+
+.dp-otp-head {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 1.1rem 1.4rem;
+  border-bottom: 1px solid rgba(255,107,0,0.15);
+  background: rgba(255,107,0,0.05);
+}
+.dp-otp-head span { font-size: 1.3rem; }
+.dp-otp-head h3   { flex: 1; font-size: 1rem; color: #fff; font-weight: 700; margin: 0; }
+.dp-otp-close {
+  background: transparent; border: 1px solid rgba(255,107,0,0.3);
+  border-radius: 50%; width: 28px; height: 28px;
+  color: #ff6b00; cursor: pointer; font-size: 0.85rem;
+  display: flex; align-items: center; justify-content: center;
+}
+.dp-otp-close:hover { background: rgba(255,107,0,0.1); }
+
+.dp-otp-body {
+  padding: 1.8rem 1.4rem;
+  display: flex; flex-direction: column; align-items: center; gap: 1.2rem;
+  text-align: center;
+}
+
+.dp-otp-icon { font-size: 3rem; }
+
+.dp-otp-body p { font-size: 0.88rem; color: #aaa; line-height: 1.6; margin: 0; }
+
+.dp-otp-send-btn {
+  width: 100%; padding: 0.85rem;
+  background: linear-gradient(135deg, #ff6b00, #ff3d00);
+  border: none; border-radius: 10px; color: #fff;
+  font-size: 0.95rem; font-weight: 700; cursor: pointer;
+  font-family: inherit; transition: opacity 0.15s;
+  box-shadow: 0 4px 16px rgba(255,107,0,0.35);
+}
+.dp-otp-send-btn:hover    { opacity: 0.88; }
+.dp-otp-send-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.dp-otp-inputs {
+  display: flex; gap: 0.5rem; justify-content: center;
+}
+
+.dp-otp-box {
+  width: 44px; height: 52px;
+  background: rgba(255,255,255,0.04);
+  border: 2px solid rgba(255,255,255,0.1);
+  border-radius: 10px; color: #fff;
+  font-size: 1.4rem; font-weight: 700;
+  text-align: center; outline: none;
+  transition: border-color 0.2s;
+  font-family: monospace;
+}
+.dp-otp-box:focus  { border-color: #ff6b00; background: rgba(255,107,0,0.06); }
+.dp-otp-box.filled { border-color: rgba(255,107,0,0.5); }
+
+.dp-otp-verify-btn {
+  width: 100%; padding: 0.85rem;
+  background: linear-gradient(135deg, #4caf50, #388e3c);
+  border: none; border-radius: 10px; color: #fff;
+  font-size: 0.95rem; font-weight: 700; cursor: pointer;
+  font-family: inherit; transition: opacity 0.15s;
+  box-shadow: 0 4px 16px rgba(76,175,80,0.35);
+}
+.dp-otp-verify-btn:hover    { opacity: 0.88; }
+.dp-otp-verify-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.dp-otp-resend {
+  background: transparent; border: none;
+  color: #ff6b00; font-size: 0.82rem; font-weight: 600;
+  cursor: pointer; font-family: inherit; text-decoration: underline;
+}
