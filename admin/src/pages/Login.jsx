@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import "../styles/auth.css";
 
@@ -78,122 +78,88 @@ export default function Login() {
       <div className="al-blob al-blob2" />
       <div className="al-blob al-blob3" />
 
-      {/* Main wrapper */}
-      <div className={`al-wrapper ${mounted ? "al-mounted" : ""}`}>
+      {/* Centered Card */}
+      <div className={`al-card ${mounted ? "al-mounted" : ""} ${shake ? "al-shake" : ""}`}>
 
-        {/* LEFT — Branding */}
-        <div className="al-left">
-          <div className="al-left-inner">
-            <div className="al-brand-icon">🍔</div>
-            <h1 className="al-brand-name">The Hungry Hub</h1>
-            <p className="al-brand-sub">Admin Control Panel</p>
+        {/* Logo */}
+        <div className="al-card-header">
+          <div className="al-card-logo"><span>🍔</span></div>
+          <div>
+            <h2>The Hungry Hub</h2>
+            <p>Admin Control Panel</p>
+          </div>
+        </div>
 
-            <div className="al-features">
-              {[
-                { icon: "📦", text: "Manage Orders" },
-                { icon: "🍽️", text: "Menu Control" },
-                { icon: "🚚", text: "Delivery Tracking" },
-                { icon: "📊", text: "Analytics Dashboard" },
-              ].map((f, i) => (
-                <div key={i} className="al-feature-item" style={{ animationDelay: `${0.3 + i * 0.1}s` }}>
-                  <span className="al-feature-icon">{f.icon}</span>
-                  <span>{f.text}</span>
-                </div>
-              ))}
+        {/* Divider */}
+        <div className="al-divider"><span>Sign in to continue</span></div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="al-form" autoComplete="off">
+
+          {/* Email */}
+          <div className={`al-field ${focused === "email" ? "focused" : ""}`}>
+            <label>Email Address</label>
+            <div className="al-input-wrap">
+              <span className="al-icon">✉️</span>
+              <input
+                type="email"
+                value={form.email}
+                onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
+                onFocus={() => setFocused("email")}
+                onBlur={() => setFocused("")}
+                placeholder="admin@example.com"
+                autoComplete="off"
+              />
+              {form.email && (
+                <button type="button" className="al-clear-btn"
+                  onClick={() => setForm(p => ({ ...p, email: "" }))}>✕</button>
+              )}
             </div>
           </div>
 
-          {/* Decorative circles */}
-          <div className="al-deco-circle al-deco1" />
-          <div className="al-deco-circle al-deco2" />
-        </div>
-
-        {/* RIGHT — Form */}
-        <div className="al-right">
-          <div className={`al-card ${shake ? "al-shake" : ""}`}>
-
-            {/* Header */}
-            <div className="al-card-header">
-              <div className="al-card-logo">
-                <span>🍔</span>
-              </div>
-              <div>
-                <h2>Welcome Back</h2>
-                <p>Sign in to your admin account</p>
-              </div>
-            </div>
-
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="al-form" autoComplete="off">
-
-              {/* Email */}
-              <div className={`al-field ${focused === "email" ? "focused" : ""}`}>
-                <label>Email Address</label>
-                <div className="al-input-wrap">
-                  <span className="al-icon">✉️</span>
-                  <input
-                    type="email"
-                    value={form.email}
-                    onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
-                    onFocus={() => setFocused("email")}
-                    onBlur={() => setFocused("")}
-                    placeholder="admin@example.com"
-                    autoComplete="off"
-                  />
-                  {form.email && (
-                    <button type="button" className="al-clear-btn"
-                      onClick={() => setForm(p => ({ ...p, email: "" }))}>✕</button>
-                  )}
-                </div>
-              </div>
-
-              {/* Password */}
-              <div className={`al-field ${focused === "password" ? "focused" : ""}`}>
-                <label>Password</label>
-                <div className="al-input-wrap">
-                  <span className="al-icon">🔒</span>
-                  <input
-                    type={showPass ? "text" : "password"}
-                    value={form.password}
-                    onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
-                    onFocus={() => setFocused("password")}
-                    onBlur={() => setFocused("")}
-                    placeholder="Enter your password"
-                    autoComplete="new-password"
-                  />
-                  <button type="button" className="al-eye-btn"
-                    onClick={() => setShowPass(p => !p)}>
-                    {showPass ? "🙈" : "👁️"}
-                  </button>
-                </div>
-                {/* Strength bar */}
-                <div className="al-strength-track">
-                  <div className="al-strength-fill" style={{
-                    width: `${strengthWidth}%`,
-                    background: strengthColor,
-                  }} />
-                </div>
-              </div>
-
-              {/* Submit */}
-              <button type="submit" className="al-submit-btn" disabled={loading}>
-                {loading ? (
-                  <><span className="al-spinner" /><span>Signing in...</span></>
-                ) : (
-                  <><span>Sign In</span><span className="al-btn-arrow">→</span></>
-                )}
+          {/* Password */}
+          <div className={`al-field ${focused === "password" ? "focused" : ""}`}>
+            <label>Password</label>
+            <div className="al-input-wrap">
+              <span className="al-icon">🔒</span>
+              <input
+                type={showPass ? "text" : "password"}
+                value={form.password}
+                onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
+                onFocus={() => setFocused("password")}
+                onBlur={() => setFocused("")}
+                placeholder="Enter your password"
+                autoComplete="new-password"
+              />
+              <button type="button" className="al-eye-btn"
+                onClick={() => setShowPass(p => !p)}>
+                {showPass ? "🙈" : "👁️"}
               </button>
-
-            </form>
-
-            {/* Footer */}
-            <div className="al-card-footer">
-              <span>🔐</span>
-              <span>Authorized personnel only</span>
             </div>
-
+            <div className="al-strength-track">
+              <div className="al-strength-fill" style={{ width:`${strengthWidth}%`, background: strengthColor }} />
+            </div>
           </div>
+
+          {/* Submit */}
+          <button type="submit" className="al-submit-btn" disabled={loading}>
+            {loading ? (
+              <><span className="al-spinner" /><span>Signing in...</span></>
+            ) : (
+              <><span>Sign In</span><span className="al-btn-arrow">→</span></>
+            )}
+          </button>
+
+          <Link to="/forgot-password" className="fp-back-link" style={{marginTop:"0.75rem"}}>
+            Forgot Password?
+          </Link>
+
+        </form>
+
+        <div className="al-card-footer">
+          <span>🔐</span><span>Authorized personnel only</span>
         </div>
+
       </div>
     </div>
   );

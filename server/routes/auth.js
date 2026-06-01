@@ -135,4 +135,89 @@ router.post("/logout", (req, res) => {
   res.json({ message: "Logged out successfully" });
 });
 
+// ── POST /api/auth/forgot-password ───────────────────────────
+// Step 1: Send OTP to registered email
+router.post("/forgot-password", async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ message: "Email is required" });
+
+    const user = await User.findOne({ email, isVerified: true });
+    if (!user) return res.status(404).json({ message: "No account found with this email" });
+
+    const otp       = generateOtp();
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 min
+
+    user.otp = { code: otp, expiresAt };
+    await user.save();
+
+    // Send OTP email
+    await sendOtpEmail(email, user.name, otp);
+
+    res.json({ message: "OTP sent to your email" });
+  } catch (err) {
+    console.error("forgot-password error:", err);
+    res.status(500).json({ message: "Failed to send OTP" });
+  }
+});
+
+// ── POST /api/auth/verify-reset-otp ──────────────────────────
+// Step 2: Verify OTP
+router.post("/verify-reset-otp", async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    if (!email || !otp) return res.status(400).json({ message: "Email and OTP required" });
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (!user.otp?.code || user.otp.code !== otp)
+      return res.status(400).json({ message: "Invalid OTP" });
+
+    if (new Date() > user.otp.expiresAt)
+      return res.status(400).json({ message: "OTP expired. Please request a new one." });
+
+    // Generate a short-lived reset token
+    const resetToken = jwt.sign({ id: user._id, purpose: "reset" }, process.env.JWT_SECRET, { expiresIn: "15m" });
+
+    res.json({ message: "OTP verified", resetToken });
+  } catch (err) {
+    res.status(500).json({ message: "Verification failed" });
+  }
+});
+
+// ── POST /api/auth/reset-password ────────────────────────────
+// Step 3: Set new password using reset token
+router.post("/reset-password", async (req, res) => {
+  try {
+    const { resetToken, newPassword } = req.body;
+    if (!resetToken || !newPassword)
+      return res.status(400).json({ message: "Reset token and new password required" });
+
+    if (newPassword.length < 6)
+      return res.status(400).json({ message: "Password must be at least 6 characters" });
+
+    let decoded;
+    try {
+      decoded = jwt.verify(resetToken, process.env.JWT_SECRET);
+    } catch {
+      return res.status(400).json({ message: "Reset token expired or invalid. Please start over." });
+    }
+
+    if (decoded.purpose !== "reset")
+      return res.status(400).json({ message: "Invalid reset token" });
+
+    const user = await User.findById(decoded.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.password = newPassword;
+    user.otp      = undefined;
+    await user.save();
+
+    res.json({ message: "Password reset successfully! You can now login." });
+  } catch (err) {
+    res.status(500).json({ message: "Password reset failed" });
+  }
+});
+
 module.exports = router;
