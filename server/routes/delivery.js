@@ -167,12 +167,11 @@ router.put("/orders/:id/status", protect, deliveryOnly, async (req, res) => {
       order.assignedTo = req.user._id;
       await order.save();
 
-      // Notify customer
-      try {
-        if (order.user?.email) {
-          await sendOrderNotification(order, order.user.email, order.user.name);
-        }
-      } catch (e) { console.error("Notification error:", e.message); }
+      // Notify customer (non-blocking)
+      if (order.user?.email) {
+        sendOrderNotification(order, order.user.email, order.user.name)
+          .catch(e => console.error("❌ Notification error:", e.message));
+      }
 
       return res.json({ message: "Status updated to Out for Delivery", order });
     }
@@ -247,13 +246,14 @@ router.post("/orders/:id/verify-otp", protect, deliveryOnly, async (req, res) =>
     order.deliveryOtp = { code: null, expiresAt: null };
     await order.save();
 
-    // Notify customer
-    try {
-      const pop = await Order.findById(order._id).populate("user", "name email");
-      if (pop?.user?.email) {
-        await sendOrderNotification(pop, pop.user.email, pop.user.name);
-      }
-    } catch (e) { console.error("Notification error:", e.message); }
+    // Notify customer (non-blocking)
+    Order.findById(order._id).populate("user", "name email")
+      .then(pop => {
+        if (pop?.user?.email) {
+          sendOrderNotification(pop, pop.user.email, pop.user.name)
+            .catch(e => console.error("❌ Notification error:", e.message));
+        }
+      });
 
     res.json({ message: "Order delivered successfully! 🎉", order });
   } catch (err) {

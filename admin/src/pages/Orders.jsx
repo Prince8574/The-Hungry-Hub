@@ -85,11 +85,12 @@ export default function Orders() {
       setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
       if (selectedOrder?.id === orderId) setSelectedOrder(prev => ({ ...prev, status: newStatus }));
       const opt = getStatusOpt(newStatus);
-      toast.success(`${opt.emoji} ${opt.label}`, {
+      toast.success(`${opt.emoji} ${opt.label} — Customer notified 📧`, {
         style: { background: "#1a1a1a", color: "#fff", border: `1px solid ${opt.color}` }
       });
-    } catch {
-      toast.error("Failed to update status");
+    } catch (err) {
+      console.error("Status update error:", err);
+      toast.error(err.response?.data?.message || "Failed to update status");
     }
   };
 

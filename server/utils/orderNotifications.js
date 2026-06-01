@@ -62,24 +62,54 @@ const sendOrderNotification = async (order, customerEmail, customerName) => {
   // Progress bar steps
   const steps = ["pending","confirmed","preparing","out_for_delivery","delivered"];
   const currentIdx = steps.indexOf(order.status);
-  const stepsHtml = steps.map((s, i) => {
-    const done    = i <= currentIdx && order.status !== "cancelled";
-    const current = i === currentIdx && order.status !== "cancelled";
-    const sc      = STATUS_CONFIG[s];
-    return `
-      <td style="text-align:center;padding:0 4px;">
-        <div style="width:32px;height:32px;border-radius:50%;margin:0 auto 4px;
-                    background:${done ? cfg.color : "#e0e0e0"};
-                    display:flex;align-items:center;justify-content:center;
-                    font-size:14px;line-height:32px;
-                    box-shadow:${current ? `0 0 0 3px ${cfg.color}40` : "none"};">
-          ${done ? sc.emoji : "○"}
-        </div>
-        <div style="font-size:9px;color:${done ? "#333" : "#aaa"};font-weight:${current ? "700" : "400"};">
-          ${s === "out_for_delivery" ? "Delivery" : s.charAt(0).toUpperCase() + s.slice(1)}
-        </div>
-      </td>`;
-  }).join(`<td style="padding-bottom:20px;"><div style="height:2px;background:#e0e0e0;margin-top:16px;"></div></td>`);
+
+  const stepLabels = {
+    pending: "Received", confirmed: "Confirmed",
+    preparing: "Preparing", out_for_delivery: "Out for Delivery", delivered: "Delivered"
+  };
+
+  const stepsHtml = order.status !== "cancelled" ? `
+  <tr>
+    <td style="background:#fff;padding:20px 32px 28px;">
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          ${steps.map((s, i) => {
+            const done    = i <= currentIdx;
+            const current = i === currentIdx;
+            const sc      = STATUS_CONFIG[s];
+            const isLast  = i === steps.length - 1;
+            return `
+              <td style="text-align:center;vertical-align:top;position:relative;">
+                <!-- Circle -->
+                <div style="
+                  width:52px;height:52px;border-radius:50%;
+                  margin:0 auto 8px;
+                  background:${done ? cfg.color : "#f0f0f0"};
+                  display:flex;align-items:center;justify-content:center;
+                  font-size:22px;line-height:52px;
+                  border:3px solid ${current ? cfg.color : done ? cfg.color : "#e0e0e0"};
+                  box-shadow:${current ? `0 0 0 4px ${cfg.color}30` : "none"};
+                  position:relative;z-index:2;
+                ">${sc.emoji}</div>
+                <!-- Label -->
+                <div style="
+                  font-size:11px;
+                  color:${done ? "#333" : "#aaa"};
+                  font-weight:${current ? "800" : done ? "600" : "400"};
+                  white-space:nowrap;
+                ">${stepLabels[s]}</div>
+                ${current ? `<div style="font-size:9px;color:${cfg.color};font-weight:700;margin-top:2px;">● Now</div>` : ""}
+              </td>
+              ${!isLast ? `
+              <td style="vertical-align:top;padding-top:24px;">
+                <div style="height:3px;background:${i < currentIdx ? cfg.color : "#e0e0e0"};border-radius:2px;margin:0 -4px;"></div>
+              </td>` : ""}
+            `;
+          }).join("")}
+        </tr>
+      </table>
+    </td>
+  </tr>` : "";
 
   const html = `<!DOCTYPE html>
 <html>
@@ -114,14 +144,7 @@ const sendOrderNotification = async (order, customerEmail, customerName) => {
   </tr>
 
   <!-- Progress tracker (only for non-cancelled) -->
-  ${order.status !== "cancelled" ? `
-  <tr>
-    <td style="background:#fff;padding:24px 32px 0;">
-      <table width="100%" cellpadding="0" cellspacing="0">
-        <tr>${stepsHtml}</tr>
-      </table>
-    </td>
-  </tr>` : ""}
+  ${order.status !== "cancelled" ? stepsHtml : ""}
 
   <!-- Message -->
   <tr>

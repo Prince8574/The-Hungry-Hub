@@ -235,21 +235,20 @@ router.put('/:id/status', protect, adminOnly, async (req, res, next) => {
       req.params.id,
       { status },
       { new: true }
-    ).populate('items.menuItem', 'name image');
+    ).populate('user', 'name email')
+     .populate('items.menuItem', 'name');
 
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
     }
 
     // Send status notification to customer
-    try {
-      const populatedOrder = await Order.findById(req.params.id)
-        .populate('user', 'name email')
-        .populate('items.menuItem', 'name');
-      if (populatedOrder?.user?.email) {
-        await sendOrderNotification(populatedOrder, populatedOrder.user.email, populatedOrder.user.name);
-      }
-    } catch (e) { console.error("Notification error:", e.message); }
+    if (order.user?.email) {
+      sendOrderNotification(order, order.user.email, order.user.name)
+        .catch(e => console.error("❌ Notification error:", e.message));
+    } else {
+      console.log("⚠️ No customer email for order:", req.params.id);
+    }
 
     res.json({ message: 'Order status updated', order });
   } catch (err) {
