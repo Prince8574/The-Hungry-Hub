@@ -8,6 +8,7 @@ import MenuManagement from "./pages/MenuManagement";
 import MenuItemForm from "./pages/MenuItemForm";
 import Admins from "./pages/Admins";
 import AddAdmin from "./pages/AddAdmin";
+import Offers from "./pages/Offers";
 import Settings from "./pages/Settings";
 import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
@@ -109,6 +110,17 @@ function App() {
           }
         />
         
+        <Route
+          path="/offers"
+          element={
+            <ProtectedRoute>
+              <AdminLayout>
+                <Offers />
+              </AdminLayout>
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path="/admins"
           element={

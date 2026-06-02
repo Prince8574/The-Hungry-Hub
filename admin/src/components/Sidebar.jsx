@@ -9,12 +9,13 @@ export default function Sidebar() {
 
   // Menu items with role-based visibility
   const menuItems = [
-    { path: "/dashboard", icon: "📊", label: "Dashboard", roles: ["admin", "super_admin"] },
-    { path: "/orders", icon: "📦", label: "Orders", roles: ["admin", "super_admin"] },
-    { path: "/menu", icon: "🍔", label: "Menu", roles: ["admin", "super_admin"] },
-    { path: "/admins", icon: "👨‍💼", label: "Admins", roles: ["super_admin"] },
-    { path: "/users", icon: "👥", label: "Users", roles: ["super_admin"] },
-    { path: "/settings", icon: "⚙️", label: "Settings", roles: ["admin", "super_admin"] },
+    { path: "/dashboard", icon: "📊", label: "Dashboard",  roles: ["admin", "super_admin"] },
+    { path: "/orders",    icon: "📦", label: "Orders",     roles: ["admin", "super_admin"] },
+    { path: "/menu",      icon: "🍔", label: "Menu",       roles: ["admin", "super_admin"] },
+    { path: "/offers",    icon: "🎁", label: "Offers",     roles: ["admin", "super_admin"] },
+    { path: "/admins",    icon: "👨‍💼", label: "Admins",     roles: ["super_admin"] },
+    { path: "/users",     icon: "👥", label: "Users",      roles: ["super_admin"] },
+    { path: "/settings",  icon: "⚙️", label: "Settings",   roles: ["admin", "super_admin"] },
   ];
 
   // Filter menu items based on role
