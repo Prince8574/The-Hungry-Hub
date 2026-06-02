@@ -45,7 +45,7 @@ export default function Offers() {
       toast.success(editing ? "Offer updated!" : "Offer created!");
       closeForm(); fetchOffers();
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to save");
+      toast.error(err.response?.data?.message || "Failed to save — check Title and Code fields");
     } finally { setSaving(false); }
   };
 
@@ -143,18 +143,12 @@ export default function Offers() {
                 <div className="of-field">
                   <label>Title *</label>
                   <input value={form.title} onChange={e => setForm(p=>({...p,title:e.target.value}))}
-                    placeholder="e.g. Flat 30% Off on Burgers" required />
+                    placeholder="e.g. Flat 30% Off on Burgers" required autoFocus />
                 </div>
                 <div className="of-field">
                   <label>Coupon Code *</label>
                   <input value={form.code} onChange={e => setForm(p=>({...p,code:e.target.value.toUpperCase()}))}
                     placeholder="e.g. BURGER30" required />
-                </div>
-                <div className="of-field of-full">
-                  <label>Description</label>
-                  <textarea value={form.description} rows={2}
-                    onChange={e => setForm(p=>({...p,description:e.target.value}))}
-                    placeholder="Short description for the offer" />
                 </div>
                 <div className="of-field">
                   <label>Discount Type</label>
@@ -170,25 +164,31 @@ export default function Offers() {
                     onChange={e => setForm(p=>({...p,discountValue:+e.target.value}))}
                     disabled={form.discountType === "free_delivery"} />
                 </div>
+                <div className="of-field of-full">
+                  <label>Description</label>
+                  <textarea value={form.description} rows={2}
+                    onChange={e => setForm(p=>({...p,description:e.target.value}))}
+                    placeholder="Short description for the offer" />
+                </div>
                 <div className="of-field">
                   <label>Min Order (₹)</label>
                   <input type="number" min="0" value={form.minOrder}
                     onChange={e => setForm(p=>({...p,minOrder:+e.target.value}))} />
                 </div>
                 <div className="of-field">
+                  <label>Valid Till</label>
+                  <input value={form.validTill} onChange={e => setForm(p=>({...p,validTill:e.target.value}))}
+                    placeholder="e.g. Today only, Always valid" />
+                </div>
+                <div className="of-field">
                   <label>Badge Text</label>
                   <input value={form.badge} onChange={e => setForm(p=>({...p,badge:e.target.value}))}
-                    placeholder="e.g. 30%\nOFF" />
+                    placeholder='e.g. 30% OFF' />
                 </div>
                 <div className="of-field">
                   <label>Badge Label</label>
                   <input value={form.badgeLabel} onChange={e => setForm(p=>({...p,badgeLabel:e.target.value}))}
                     placeholder="e.g. FLASH SALE" />
-                </div>
-                <div className="of-field">
-                  <label>Valid Till</label>
-                  <input value={form.validTill} onChange={e => setForm(p=>({...p,validTill:e.target.value}))}
-                    placeholder="e.g. Today only, Always valid" />
                 </div>
                 <div className="of-field">
                   <label>Card Color</label>
