@@ -431,3 +431,18 @@
     flex-direction: column;
   }
 }
+
+.dash-loading {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  min-height: 60vh; gap: 1rem; color: #666;
+}
+.dash-spinner {
+  width: 36px; height: 36px;
+  border: 3px solid rgba(255,107,0,0.2);
+  border-top-color: #ff6b00;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.dash-empty { color: #555; font-size: 0.85rem; padding: 2rem; text-align: center; }

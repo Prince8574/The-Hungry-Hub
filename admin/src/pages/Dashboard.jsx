@@ -1,127 +1,150 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import toast from "react-hot-toast";
 import "../styles/dashboard.css";
 
-const RECENT_ORDERS = [
-  { id: "ORD-001", customer: "Rahul Kumar", items: 3, amount: 899, status: "pending", time: "5 mins ago" },
-  { id: "ORD-002", customer: "Priya Sharma", items: 2, amount: 649, status: "completed", time: "15 mins ago" },
-  { id: "ORD-003", customer: "Amit Singh", items: 5, amount: 1299, status: "processing", time: "25 mins ago" },
-  { id: "ORD-004", customer: "Sneha Patel", items: 4, amount: 1099, status: "pending", time: "35 mins ago" },
-  { id: "ORD-005", customer: "Vikram Rao", items: 2, amount: 549, status: "completed", time: "1 hour ago" },
-];
+const API = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
-const TOP_ITEMS = [
-  { name: "Classic Burger", orders: 45, revenue: 13455, trend: "+12%" },
-  { name: "Margherita Pizza", orders: 38, revenue: 13262, trend: "+8%" },
-  { name: "Butter Chicken", orders: 32, revenue: 9568, trend: "+15%" },
-  { name: "Chocolate Cake", orders: 28, revenue: 4172, trend: "+5%" },
-];
+const STATUS_COLOR = {
+  pending:          "#ffc107",
+  confirmed:        "#2196f3",
+  preparing:        "#ff9800",
+  out_for_delivery: "#9c27b0",
+  delivered:        "#4caf50",
+  cancelled:        "#f44336",
+};
 
 export default function Dashboard() {
-  const [stats, setStats] = useState({
-    totalOrders: 0,
-    pendingOrders: 0,
-    totalRevenue: 0,
-    totalUsers: 0,
-    todayOrders: 0,
-    todayRevenue: 0,
-  });
+  const [stats, setStats]               = useState(null);
+  const [recentOrders, setRecentOrders] = useState([]);
+  const [topItems, setTopItems]         = useState([]);
+  const [loading, setLoading]           = useState(true);
+  const adminUser = JSON.parse(localStorage.getItem("adminUser") || "{}");
 
   useEffect(() => {
-    // TODO: Fetch stats from API
-    setStats({
-      totalOrders: 156,
-      pendingOrders: 12,
-      totalRevenue: 45680,
-      totalUsers: 89,
-      todayOrders: 24,
-      todayRevenue: 8450,
-    });
+    fetchDashboard();
+    const interval = setInterval(fetchDashboard, 60000);
+    return () => clearInterval(interval);
   }, []);
+
+  const fetchDashboard = async () => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      const res = await axios.get(`${API}/admin/dashboard`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setStats(res.data.stats);
+      setRecentOrders(res.data.recentOrders);
+      setTopItems(res.data.topItems);
+    } catch (err) {
+      toast.error("Failed to load dashboard data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="dashboard">
+        <div className="dash-loading">
+          <div className="dash-spinner" />
+          <p>Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const hr = new Date().getHours();
+  const greet = hr < 12 ? "Good Morning" : hr < 17 ? "Good Afternoon" : "Good Evening";
 
   return (
     <div className="dashboard">
+
       {/* Header */}
       <div className="dashboard-header">
         <div>
           <h1>Dashboard</h1>
-          <p className="dashboard-subtitle">Welcome back, Admin! 👋</p>
+          <p className="dashboard-subtitle">{greet}, {adminUser.name || "Admin"}! 👋</p>
         </div>
         <div className="header-actions">
-          <button className="btn-refresh">🔄 Refresh</button>
-          <button className="btn-export">📊 Export</button>
+          <button className="btn-refresh" onClick={() => { fetchDashboard(); toast.success("Refreshed!"); }}>
+            🔄 Refresh
+          </button>
         </div>
       </div>
 
-      {/* Main Stats - Horizontal Row */}
+      {/* Main Stats */}
       <div className="stats-row">
         <div className="stat-card">
           <p className="stat-label">Total Orders</p>
           <div className="stat-main">
             <div className="stat-icon">📦</div>
-            <h3 className="stat-number">{stats.totalOrders}</h3>
+            <h3 className="stat-number">{stats?.totalOrders ?? 0}</h3>
           </div>
-          <span className="stat-change positive">+12% from last month</span>
+          <span className="stat-change positive">All time</span>
         </div>
 
         <div className="stat-card stat-highlight">
-          <p className="stat-label">Pending Orders</p>
+          <p className="stat-label">Active Orders</p>
           <div className="stat-main">
             <div className="stat-icon">⏳</div>
-            <h3 className="stat-number">{stats.pendingOrders}</h3>
+            <h3 className="stat-number">{stats?.pendingOrders ?? 0}</h3>
           </div>
-          <span className="stat-change warning">Needs attention</span>
+          <span className="stat-change warning">
+            {stats?.pendingOrders > 0 ? "Needs attention" : "All clear ✅"}
+          </span>
         </div>
 
         <div className="stat-card">
           <p className="stat-label">Total Revenue</p>
           <div className="stat-main">
             <div className="stat-icon">💰</div>
-            <h3 className="stat-number">₹{stats.totalRevenue.toLocaleString()}</h3>
+            <h3 className="stat-number">₹{(stats?.totalRevenue ?? 0).toLocaleString()}</h3>
           </div>
-          <span className="stat-change positive">+18% from last month</span>
+          <span className="stat-change positive">All time</span>
         </div>
 
         <div className="stat-card">
-          <p className="stat-label">Total Users</p>
+          <p className="stat-label">Total Customers</p>
           <div className="stat-main">
             <div className="stat-icon">👥</div>
-            <h3 className="stat-number">{stats.totalUsers}</h3>
+            <h3 className="stat-number">{stats?.totalUsers ?? 0}</h3>
           </div>
-          <span className="stat-change positive">+8% from last month</span>
+          <span className="stat-change positive">Registered users</span>
         </div>
       </div>
 
-      {/* Today's Performance - Compact Row */}
+      {/* Today's Performance */}
       <div className="today-stats">
         <h2 className="section-title">📅 Today's Performance</h2>
         <div className="today-row">
           <div className="today-item">
             <span className="today-icon">🛒</span>
             <div>
-              <h4>{stats.todayOrders}</h4>
+              <h4>{stats?.todayOrders ?? 0}</h4>
               <p>Orders Today</p>
             </div>
           </div>
           <div className="today-item">
             <span className="today-icon">💵</span>
             <div>
-              <h4>₹{stats.todayRevenue.toLocaleString()}</h4>
+              <h4>₹{(stats?.todayRevenue ?? 0).toLocaleString()}</h4>
               <p>Revenue Today</p>
             </div>
           </div>
           <div className="today-item">
-            <span className="today-icon">⭐</span>
+            <span className="today-icon">🍽️</span>
             <div>
-              <h4>4.8</h4>
-              <p>Avg Rating</p>
+              <h4>{stats?.totalMenuItems ?? 0}</h4>
+              <p>Menu Items</p>
             </div>
           </div>
           <div className="today-item">
-            <span className="today-icon">⚡</span>
+            <span className="today-icon">🎉</span>
             <div>
-              <h4>28 min</h4>
-              <p>Avg Delivery</p>
+              <h4>{stats?.deliveredOrders ?? 0}</h4>
+              <p>Delivered</p>
             </div>
           </div>
         </div>
@@ -129,6 +152,7 @@ export default function Dashboard() {
 
       {/* Two Column Layout */}
       <div className="dashboard-grid">
+
         {/* Recent Orders */}
         <div className="dashboard-section">
           <div className="section-header">
@@ -136,23 +160,36 @@ export default function Dashboard() {
             <Link to="/orders" className="view-all-link">View All →</Link>
           </div>
           <div className="orders-list">
-            {RECENT_ORDERS.map((order) => (
-              <div key={order.id} className="order-item">
-                <div className="order-left">
-                  <span className="order-id">{order.id}</span>
-                  <div className="order-customer">
-                    <span className="customer-name">{order.customer}</span>
-                    <span className="order-time">{order.time}</span>
+            {recentOrders.length === 0 ? (
+              <div className="dash-empty">No orders yet</div>
+            ) : (
+              recentOrders.map((order) => (
+                <div key={order.id} className="order-item">
+                  <div className="order-left">
+                    <span className="order-id">#{order.id}</span>
+                    <div className="order-customer">
+                      <span className="customer-name">{order.customer}</span>
+                      <span className="order-time">{order.time}</span>
+                    </div>
+                  </div>
+                  <div className="order-right">
+                    <span className="order-amount">₹{order.amount?.toLocaleString()}</span>
+                    <span className="status-badge" style={{
+                      color: STATUS_COLOR[order.status] || "#aaa",
+                      borderColor: STATUS_COLOR[order.status] || "#aaa",
+                      background: "transparent",
+                      border: "1px solid",
+                      padding: "2px 8px",
+                      borderRadius: "12px",
+                      fontSize: "0.72rem",
+                      fontWeight: 600,
+                    }}>
+                      {order.status?.replace("_"," ")}
+                    </span>
                   </div>
                 </div>
-                <div className="order-right">
-                  <span className="order-amount">₹{order.amount}</span>
-                  <span className={`status-badge status-${order.status}`}>
-                    {order.status}
-                  </span>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
 
@@ -163,21 +200,25 @@ export default function Dashboard() {
             <Link to="/menu" className="view-all-link">View Menu →</Link>
           </div>
           <div className="top-items-list">
-            {TOP_ITEMS.map((item, index) => (
-              <div key={index} className="top-item">
-                <span className="item-rank">#{index + 1}</span>
-                <div className="item-details">
-                  <h4 className="item-name">{item.name}</h4>
-                  <p className="item-stats">{item.orders} orders • ₹{item.revenue.toLocaleString()}</p>
+            {topItems.length === 0 ? (
+              <div className="dash-empty">No data yet</div>
+            ) : (
+              topItems.map((item, index) => (
+                <div key={index} className="top-item">
+                  <span className="item-rank">#{index + 1}</span>
+                  <div className="item-details">
+                    <h4 className="item-name">{item.name}</h4>
+                    <p className="item-stats">{item.orders} orders • ₹{item.revenue?.toLocaleString()}</p>
+                  </div>
                 </div>
-                <span className="item-trend positive">{item.trend}</span>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
+
       </div>
 
-      {/* Quick Actions - Compact */}
+      {/* Quick Actions */}
       <div className="quick-actions">
         <h2 className="section-title">⚡ Quick Actions</h2>
         <div className="actions-row">
@@ -193,12 +234,17 @@ export default function Dashboard() {
             <span className="action-icon">📋</span>
             <span>Menu</span>
           </Link>
+          <Link to="/admins" className="action-btn">
+            <span className="action-icon">👥</span>
+            <span>Admins</span>
+          </Link>
           <Link to="/settings" className="action-btn">
             <span className="action-icon">⚙️</span>
             <span>Settings</span>
           </Link>
         </div>
       </div>
+
     </div>
   );
 }
