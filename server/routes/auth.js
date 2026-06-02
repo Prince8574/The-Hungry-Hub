@@ -210,6 +210,7 @@ router.post("/reset-password", async (req, res) => {
     const user = await User.findById(decoded.id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
+    // Use save() so pre-save hook hashes the password
     user.password = newPassword;
     user.otp      = undefined;
     await user.save();

@@ -18,3 +18,6 @@
 .dl-btn:hover { opacity:0.9; transform:translateY(-1px); }
 .dl-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
 .dl-note { text-align:center; margin-top:1.2rem; font-size:0.75rem; color:#555; }
+
+.dl-forgot { display:block; text-align:center; font-size:0.75rem; color:#666; text-decoration:none; margin-top:0.75rem; transition:color 0.15s; font-family:'Poppins',sans-serif; }
+.dl-forgot:hover { color:#ff6b00; }

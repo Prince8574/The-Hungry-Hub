@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from "axios";
 import "./Login.css";
@@ -61,6 +61,7 @@ export default function Login() {
           <button type="submit" className="dl-btn" disabled={loading}>
             {loading ? "Logging in..." : "🚚 Login to Delivery Panel"}
           </button>
+          <Link to="/forgot-password" className="dl-forgot">Forgot Password?</Link>
         </form>
         <p className="dl-note">Only authorized delivery partners can access this portal.</p>
       </div>

@@ -6,6 +6,7 @@ import Orders from "./pages/Orders.jsx";
 import OrderDetail from "./pages/OrderDetail.jsx";
 import Profile from "./pages/Profile.jsx";
 import Layout from "./components/Layout.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
 
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem("deliveryToken");
@@ -21,6 +22,7 @@ export default function App() {
       }} />
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
