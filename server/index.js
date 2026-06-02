@@ -68,6 +68,7 @@ app.use('/api/wishlist', require('./routes/wishlist'));
 app.use('/api/orders', require('./routes/orders'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/delivery', require('./routes/delivery'));
+app.use('/api/dashboard', require('./routes/dashboard'));
 
 // Global error handler
 app.use((err, req, res, next) => {
